@@ -55,8 +55,8 @@ const SSHDBConnection = new Promise((resolve, reject) => {
                     stream
                 };
                 console.log("Attempting to connect to db...");
-                const connection = mysql.createPool(updatedDBServer);
-                connection.getConnection((error) => {
+                const connection = mysql.createConnection(updatedDBServer);
+                connection.connect((error) => {
                     if (error) {
                         console.log("Error: ", error);
                         reject(error);
@@ -72,23 +72,26 @@ const SSHDBConnection = new Promise((resolve, reject) => {
         );
     }).connect(sshTunnelConfig);
 })
-    .then((conn) => {
-        holdConn = (conn.config.connectionConfig.user);
-        console.log("User: ", holdConn);
-    });
-console.log("User: ", holdConn);
-    // holdConn.query(`SELECT * FROM Customer WHERE id = 6590559`, (err, result, fields) => {
-    //     if (err) throw err;
-    //     console.log("SQL Query Result-> ", result);
-    //     if (result.length !== 0) {  //considering SQL Select statement
-    //         result = result[0];
-    //         //perform your required work on result
-    //     }
-    //     else {
-    //         console.log("No data found")
-    //     }
-
-    // });
+.then((conn) => {
+    // console.log(conn);
+    conn.query(`SELECT * FROM Customer where id = 5087926`, (err, result, fields) => {
+        if (err) throw err;
+        console.log("SQL Query Result-> ", result);
+        if (result.length !== 0) {  //considering SQL Select statement
+            result = result[0];
+            //perform your required work on result
+        }
+        else {
+            console.log("No data found")
+        }
+})
+});
+//     .then((conn) => {
+//         holdConn = (conn.config.connectionConfig.user);
+//         console.log("User: ", holdConn);
+//     });
+// console.log("User: ", holdConn);
+    
 
 async function getCustomers(id){
     const [rows] = await SSHDBConnection.query(`SELECT * FROM Customer`)
