@@ -8,19 +8,18 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
 const props = defineProps({
   game: {
     type: Object,
-    required: true,
-  },
-});
+    required: true
+  }
+})
 
 const addToCart = () => {
-
-  console.log(`${props.game.title} added to cart!`);
-};
+  console.log(`${props.game.title} added to cart!`)
+}
 </script>
 
 <style scoped>

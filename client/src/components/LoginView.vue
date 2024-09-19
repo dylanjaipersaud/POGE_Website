@@ -1,29 +1,39 @@
+<!-- eslint-disable space-before-function-paren -->
+<!-- eslint-disable semi -->
 <template>
   <div class="login-view">
     <h2>Login</h2>
     <form @submit.prevent="login">
       <div>
-        <label for="username">Username:</label>
-        <input type="text" v-model="username" id="username" required />
+        <label for="username">Email</label>
+        <input type="text" v-model="email" id="username" required />
       </div>
       <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="email" id="email" required />
+        <label for="email">Account ID</label>
+        <input type="email" v-model="id" id="email" required />
       </div>
       <button type="submit">Login</button>
     </form>
   </div>
 </template>
 
-<script setup>
-import { ref, defineEmits } from 'vue';
+<script>
+// import { ref, defineEmits } from 'vue'
 
-const username = ref('');
-const email = ref('');
-const emit = defineEmits(['login']);
+// const username = ref('')
+// const email = ref('')
+// const emit = defineEmits(['login'])
 
-function login() {
-  emit('login', username.value, email.value);
+// function login () {
+//   emit('login', username.value, email.value)
+// }
+export default {
+  data: () => ({
+    email: null,
+    id: 0
+  }),
+
+  props: []
 }
 </script>
 

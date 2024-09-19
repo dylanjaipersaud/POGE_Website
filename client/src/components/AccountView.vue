@@ -3,26 +3,35 @@
     <h2>Account Information</h2>
     <form @submit.prevent="handleUpdate">
       <div>
-        <label for="username">Username:</label>
-        <input type="text" v-model="userInfo.username" id="username" required />
+        <label for="username">Email</label>
+        <input type="text" v-model="email" id="username" required />
       </div>
       <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="userInfo.email" id="email" required />
+        <label for="email">Account ID</label>
+        <input type="email" v-model="id" id="email" required />
       </div>
       <button type="submit">Update Info</button>
     </form>
   </div>
 </template>
 
-<script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+<script>
+// import { defineProps, defineEmits } from 'vue'
 
-const props = defineProps(['userInfo']);
-const emit = defineEmits(['onUpdate']);
+// const props = defineProps(['userInfo'])
+// const emit = defineEmits(['onUpdate'])
 
-function handleUpdate() {
-  emit('onUpdate', { username: props.userInfo.username, email: props.userInfo.email });
+// function handleUpdate () {
+//   emit('onUpdate', { username: props.userInfo.username, email: props.userInfo.email })
+// }
+
+export default {
+  data: () => ({
+    email: null,
+    id: 0
+  }),
+
+  props: []
 }
 </script>
 
