@@ -17,7 +17,7 @@
         <router-link to="/" class="router-link-deco">
             <v-btn>Search</v-btn>
         </router-link>
-        <router-link to="./LoginView" class="router-link-deco">
+        <router-link to="/LoginView" class="router-link-deco">
             <v-btn>Login</v-btn>
         </router-link>
     </v-toolbar>

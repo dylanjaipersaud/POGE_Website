@@ -1,6 +1,9 @@
 <template>
-  <NavBar />
-  <header style="display: flex; align-items: center; margin-right: 50px; background-color: #121212; position: fixed; width: 100%;">
+  <v-container>
+    <NavBar />
+  <router-view></router-view>
+  </v-container>
+  <!-- <header style="display: flex; align-items: center; margin-right: 50px; background-color: #121212; position: fixed; width: 100%;">
     <img alt="Vue logo" class="logo" src="./assets/pogchamp-twitch.jpg" width="125" height="125" />
     
 
@@ -35,7 +38,7 @@
 
       <LoginView v-if="showingLogin" @login="handleLogin" />
     </div>
-  </main>
+  </main> -->
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
