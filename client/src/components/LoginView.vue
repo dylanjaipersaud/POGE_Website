@@ -1,7 +1,6 @@
-<!-- eslint-disable space-before-function-paren -->
-<!-- eslint-disable semi -->
+
 <template>
-  <div class="login-view">
+  <!-- <div class="login-view">
     <h2>Login</h2>
     <form @submit.prevent="login">
       <div>
@@ -14,10 +13,37 @@
       </div>
       <button type="submit">Login</button>
     </form>
-  </div>
+  </div> -->
+  <v-container>
+    <h2>Login</h2>
+    <v-form ref="form">
+      <v-text-field
+        label="Email"
+        append-icon="mdi-account"
+        hint="Enter the email associated to your account"
+        persistent-hint
+        clearable
+        v-model="email"
+        required
+      >
+      </v-text-field>
+      <v-text-field
+        label="ID"
+        append-icon="mdi-password"
+        hint="Enter the ID associated to your account"
+        persistent-hint
+        clearable=true
+        v-model="id"
+        required
+      >
+      </v-text-field>
+      <v-btn class="mt-2" type="submit" block @click="validate">Login</v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
+/* eslint-disable */ 
 // import { ref, defineEmits } from 'vue'
 
 // const username = ref('')
@@ -30,11 +56,24 @@
 export default {
   data: () => ({
     email: null,
-    id: 0
+    id: null,
   }),
+  methods: {
+    validate(){
+      if(this.email != null && this.id != null){
+        window.console.log("Login Received - user: ", this.user, ", id: ", this.id);
+        if(this.email == "ex@gmail.com" && this.id != 1234){
+          window.console.log("Login Successful");
+        }
+      }
+      else{
+        window.console.log("Login Failed");
+      }
+    }
+  },
 
-  props: []
-}
+  // props: [],
+};
 </script>
 
 <style scoped>

@@ -1,6 +1,8 @@
 <template>
+  <NavBar />
   <header style="display: flex; align-items: center; margin-right: 50px; background-color: #121212; position: fixed; width: 100%;">
     <img alt="Vue logo" class="logo" src="./assets/pogchamp-twitch.jpg" width="125" height="125" />
+    
 
     <nav class="menu" style="margin-left: auto;">
       <ul style="list-style: none; display: flex; ">
@@ -8,11 +10,12 @@
         <li><button style="background: none; border: none; color: #fff; text-decoration: none;">Shop</button></li>
         <li><button style="background: none; border: none; color: #fff; text-decoration: none;">About</button></li>
         <li><button style="background: none; border: none; color: #fff; text-decoration: none;">Contact</button></li>
-        <li v-if="!isLoggedIn"><button @click="showLogin">Login</button></li>
-        <li v-if="isLoggedIn"><button @click="handleLogout">Logout</button></li>
+        <li v-if="!isLoggedIn"><button style="background: none; border: none; color: #fff; text-decoration: none;" @click="showLogin">Login</button></li>
+        <li v-if="isLoggedIn"><button style="background: none; border: none; color: #fff; text-decoration: none;" @click="handleLogout">Logout</button></li>
       </ul>
     </nav>
   </header>
+  
 
   <main style="padding-top: 150px; background-color: #1e1e1e; color: #fff;">
     <div class="wrapper" style="display: flex; flex-direction: column; align-items: center;">
@@ -40,6 +43,7 @@ import GameItem from './components/GameItem.vue'
 import LoginView from './components/LoginView.vue'
 import AccountView from './components/AccountView.vue'
 import usersData from '@/assets/MOCK_DATA.json' // Import the JSON data
+import NavBar from './components/NavBar.vue'
 
 // Set initial states
 const isLoggedIn = ref(false)
@@ -103,7 +107,7 @@ function showGameList () {
 </script>
 
 <style scoped>
-.game-item {
+/* .game-item {
   background-color: #222;
   color: #fff;
   border: 1px solid #444;
@@ -111,5 +115,5 @@ function showGameList () {
   padding: 1rem;
   text-align: center;
   margin: 1rem;
-}
+} */
 </style>
