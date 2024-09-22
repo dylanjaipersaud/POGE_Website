@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar class="toolbar">
+    <v-toolbar class="toolbar" elevation="5">
         <v-toolbar-title>POGE</v-toolbar-title>
         <v-spacer></v-spacer>
         <!-- <v-icon type="mdi" size="small" color="green-darken-2" icon="mdi-account-circle-outline" ></v-icon>

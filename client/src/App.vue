@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="main-con">
     <NavBar />
   <router-view></router-view>
   </v-container>
@@ -119,4 +119,9 @@ function showGameList () {
   text-align: center;
   margin: 1rem;
 } */
+ .main-con{
+  padding: 0%;
+  margin: 0%;
+  height: 100%;
+ }
 </style>

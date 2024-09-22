@@ -1,23 +1,25 @@
 <template>
   <v-container>
     <h1>POG Entertainment</h1>
+    <h2>Top Games of the Week</h2>
     <v-carousel
     height="400"
     show-arrows="hover"
     cycle
+    interval="2000"
     hide-delimiter-background
   >
     <v-carousel-item
-      v-for="(slide, i) in slides"
-      :key="i"
+      v-for="game in top_games"
+      :key="game.id"
     >
       <v-sheet
-        :color="colors[i]"
+        :color="game.color"
         height="100%"
       >
         <div class="d-flex fill-height justify-center align-center">
           <div class="text-h2">
-            {{ slide }} Slide
+            {{ game.name }} Slide
           </div>
         </div>
       </v-sheet>
@@ -28,7 +30,25 @@
 
 <script>
 export default {
-
+  data: () => ({
+    top_games: [
+      {
+        id: 1,
+        name: "Game 1",
+        color: "#ff0000"
+      },
+      {
+        id: 2,
+        name: "Game 2",
+        color: "#00ff00"
+      },
+      {
+        id: 3,
+        name: "Game 3",
+        color: "#0000ff"
+      },
+    ]
+  })
 }
 </script>
 
