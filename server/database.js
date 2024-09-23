@@ -6,21 +6,17 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-// const express = require('express');
-
 const mysql = require('mysql2');
 
 const { Client } = require('ssh2');
 const sshClient = new Client();
-let holdConn;
 
 // Database connection details
 const dbServer = {
     host: process.env.MYSQL_HOST,
     port: 3306,
     user: process.env.MYSQL_USER,
-    // PASSWORD MAY BE BLANK (empty string / '')
-    password: process.env.MYSQL_PASSWORD,
+    password: process.env.MYSQL_PASSWORD, // PASSWORD MAY BE BLANK (empty string / '')
     database: process.env.MYSQL_DATABASE
 };
 
@@ -55,14 +51,15 @@ const SSHDBConnection = new Promise((resolve, reject) => {
                     stream
                 };
                 console.log("Attempting to connect to db...");
-                const connection = mysql.createPool(updatedDBServer);
-                connection.getConnection((error) => {
+                const connection = mysql.createConnection(updatedDBServer);
+                connection.connect((error) => {
                     if (error) {
                         console.log("Error: ", error);
                         reject(error);
                     }
                     console.log("Connection Successful");
                     try {
+                        // console.log(connection)
                         resolve(connection);
                     } catch (err) {
                         console.log(err);
@@ -71,31 +68,34 @@ const SSHDBConnection = new Promise((resolve, reject) => {
             }
         );
     }).connect(sshTunnelConfig);
-})
-    .then((conn) => {
-        holdConn = (conn.config.connectionConfig.user);
-        console.log("User: ", holdConn);
-    });
-console.log("User: ", holdConn);
-    // holdConn.query(`SELECT * FROM Customer WHERE id = 6590559`, (err, result, fields) => {
-    //     if (err) throw err;
-    //     console.log("SQL Query Result-> ", result);
-    //     if (result.length !== 0) {  //considering SQL Select statement
-    //         result = result[0];
-    //         //perform your required work on result
-    //     }
-    //     else {
-    //         console.log("No data found")
-    //     }
+});
+    // .then((conn) => {
+    //     conn.query(`SELECT * FROM Customer WHERE id = 6590559`, (err, result, fields) => {
+    //         if (err) throw err;
+    //         console.log("SQL Query Result-> ", result);
+    //         if (result.length !== 0) {  //considering SQL Select statement
+    //             result = result[0];
+    //             //perform your required work on result
+    //         }
+    //         else {
+    //             console.log("No data found")
+    //         }
 
+    //     })
     // });
+// console.log("User: ", holdConn);
+// holdConn.query(`SELECT * FROM Customer WHERE id = 6590559`, (err, result, fields) => {
+//     if (err) throw err;
+//     console.log("SQL Query Result-> ", result);
+//     if (result.length !== 0) {  //considering SQL Select statement
+//         result = result[0];
+//         //perform your required work on result
+//     }
+//     else {
+//         console.log("No data found")
+//     }
 
-async function getCustomers(id){
-    const [rows] = await SSHDBConnection.query(`SELECT * FROM Customer`)
-    return rows[0];
-}
-
-// getCustomers();
+// });
 
 module.exports = SSHDBConnection;
 
