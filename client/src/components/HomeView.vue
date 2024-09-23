@@ -3,27 +3,25 @@
     <h1>POG Entertainment</h1>
     <h2>Top Games of the Week</h2>
     <v-carousel
-    height="400"
-    show-arrows="hover"
-    cycle
-    interval="2000"
-    hide-delimiter-background
-  >
-    <v-carousel-item
-      v-for="game in top_games"
-      :key="game.id"
+      height="400"
+      show-arrows="hover"
+      cycle
+      interval="2000"
+      hide-delimiter-background
     >
-      <v-sheet
-        :color="game.color"
-        height="100%"
+      <v-carousel-item
+        v-for="game in top_games"
+        :key="game.id"
       >
-        <div class="d-flex fill-height justify-center align-center">
-          <div class="text-h2">
-            {{ game.name }} Slide
+        <v-sheet
+          :color="game.color"
+          height="100%"
+        >
+          <div class="d-flex justify-center align-center">
+            <img v-if="game.image" :src="game.image" alt="Game Image" class="game-image" />
           </div>
-        </div>
-      </v-sheet>
-    </v-carousel-item>
+        </v-sheet>
+      </v-carousel-item>
     </v-carousel>
   </v-container>
 </template>
@@ -33,19 +31,14 @@ export default {
   data: () => ({
     top_games: [
       {
-        id: 1,
-        name: "Game 1",
-        color: "#ff0000"
+        image: require('@/assets/hades.avif')
       },
       {
-        id: 2,
-        name: "Game 2",
-        color: "#00ff00"
+        image: require('@/assets/25.jpg'),
+       
       },
       {
-        id: 3,
-        name: "Game 3",
-        color: "#0000ff"
+        image: require('@/assets/sonic.jpg'),
       },
     ]
   })
@@ -53,5 +46,9 @@ export default {
 </script>
 
 <style>
-
+.game-image {
+  max-width: 100%; /* Responsive image */
+  height: auto;
+  margin-bottom: 1rem; /* Space below the image */
+}
 </style>

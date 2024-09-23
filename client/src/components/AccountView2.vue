@@ -1,6 +1,6 @@
 <template>
   <v-container class="account-con">
-    <h2>Employee Account Information</h2>
+    <h2>Customer Account Information</h2>
     <v-form ref="form">
       <v-text-field
         class="form-opt"
