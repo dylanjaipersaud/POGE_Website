@@ -1,6 +1,9 @@
 // ES Module Imports
 // import express from 'express';
-const SSHDBConnection = require('./database.js');
+// import { dbcall } from './controller';
+
+// const getCustomers = require('./controller');
+const dbConn = require('./database')
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -11,25 +14,31 @@ const express = require('express');
 const app = express();
 const port = 3030;
 
-// SSHDBConnection.then((conn) => {
-//     conn.query(`SELECT * FROM Customer WHERE id = 6590559`, (err, result, fields) => {
-//         if (err) throw err;
-//         console.log("SQL Query Result-> ", result);
-//         if (result.length !== 0) {  //considering SQL Select statement
-//             result = result[0];
-//             //perform your required work on result
-//         }
-//         else {
-//             console.log("No data found")
-//         }
-//     });
+// Gets all Customers
+app.get("/Customers", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Customers")
+        conn.query(`SELECT * FROM Customer`, (err, result) => {
+            console.log("Entered query")
+            if (err) console.log(err);
+            console.log("SQL Query Result-> ", result);
+            res.send(result)
+        })
+    })
+})
 
-// })
-
-
-app.get("/Customer", async (req, res) => {
-    const customers = await getCustomers();
-    res.status(200).send("Customers received")
+// Gets a single customer based on their ID
+app.get("/Customers/:id", async (req, res) => {
+    const id = req.params.id
+    await dbConn.then((conn) => {
+        console.log("Getting Customers")
+        conn.query(`SELECT * FROM Customer WHERE id = ?`, [id], (err, result) => {
+            console.log("Entered query")
+            if (err) console.log(err);
+            console.log("SQL Query Result-> ", result);
+            res.send(result)
+        })
+    })
 })
 
 app.use((err, req, res, next) => {
