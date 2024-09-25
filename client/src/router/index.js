@@ -10,11 +10,10 @@ const routes = [
   { path: '/LoginView', name: LoginView, component: LoginView },
   { path: '/AccountView', name: AccountView, component: AccountView },
   { path: '/AccountView2', name: AccountView2, component: AccountView2 },
-
-  ,
 ]
 
 const router = createRouter({
+  // eslint-disable-next-line no-undef
   history: createWebHistory(process.env.BASE_URL),
   routes
 })

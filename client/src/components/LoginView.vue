@@ -1,29 +1,15 @@
 
 <template>
-  <!-- <div class="login-view">
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-      <div>
-        <label for="username">Email</label>
-        <input type="text" v-model="email" id="username" required />
-      </div>
-      <div>
-        <label for="email">Account ID</label>
-        <input type="email" v-model="id" id="email" required />
-      </div>
-      <button type="submit">Login</button>
-    </form>
-  </div> -->
-  <v-container class="login-con">
+  <v-container v-if="role == 0" class="login-con">
     <h2>Sign into your POGE Account</h2>
     <v-card v-if="invalidAuth" class="invalid-card" flat>
       <h4>Authentication failed!</h4>
     </v-card>
-    <v-form class="form-con" ref="form">
+    <v-form class="form-con" ref="form" lazy>
       <v-text-field
-        class="form-opt"
+        class="form-opt-email"
         label="Email"
-        prepend-icon="mdi-account"
+        prepend-icon="mdi-account-box"
         hint="Enter the email associated to your account"
         :rules="rules"
         persistent-hint
@@ -38,32 +24,41 @@
         prepend-icon="mdi-lock"
         hint="Enter the ID associated to your account"
         :rules="rules"
+        type="password"
         persistent-hint
         clearable
         v-model="id"
         required
       >
       </v-text-field>
-      <v-btn type="submit" class="login-btn" @click="validateLogin">Login</v-btn>
+      <!-- {{ email }}
+      <br />
+      {{ id }}
+      <br />
+      {{ customer_items }}
+      <br />
+      {{ holdCustomer }} 
+       {{ role }}
+       <br>
+       {{ user }} -->
+      <v-btn type="submit" class="login-btn" @click="accountLookUp"
+        >Login</v-btn
+      >
     </v-form>
+  </v-container>
+  <v-container v-else>
+    User logged in - {{ user }}
   </v-container>
 </template>
 
 <script>
-/* eslint-disable */
-// import { ref, defineEmits } from 'vue'
+// import axios from "axios";
 
-// const username = ref('')
-// const email = ref('')
-// const emit = defineEmits(['login'])
-
-// function login () {
-//   emit('login', username.value, email.value)
-// }
 export default {
   data: () => ({
-    email: null,
-    id: null,
+    email: "mako1902@ymail.com",
+    id: 6590559,
+    holdCustomer: {},
     rules: [
       (value) => {
         if (value) return true;
@@ -73,23 +68,42 @@ export default {
     ],
     invalidAuth: false,
   }),
-  methods: {
-    validateLogin() {
-      if (this.email != null && this.id != null) {
-        window.console.log(
-          "Login Received - user: ",
-          this.user,
-          ", id: ",
-          this.id
-        );
-        if (this.email == "ex@gmail.com" && this.id != 1234) {
-          alert("Login Successful");
-        }
-      } else {
-        this.invalidAuth = true;
-        alert("Login Failed");
-      }
+  computed: {
+    customer_items() {
+      return this.$store.getters.customer_items;
     },
+    role(){
+      return this.$store.state.role;
+    },
+    user(){
+      return this.$store.state.user;
+    }
+  },
+  mounted() {
+    this.$store
+      .dispatch("getCustomers")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  methods: {
+    accountLookUp() {
+      const holdUser = this.customer_items.find((item) => {
+        console.log(item);
+        return item.id == this.id;
+      });
+      if (holdUser.email == this.email) {
+        alert("User Authenticated");
+        this.$store.commit('update_user', holdUser);
+        this.$store.commit('update_role', 1);
+        alert(this.user);
+      } else this.invalidAuth = true;
+    },
+
+    getUserRole(){},
   },
 
   // props: [],
@@ -111,7 +125,8 @@ export default {
   justify-content: center;
   color: rgb(245, 60, 60);
   width: max-content;
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .form-con {
   display: flex;
@@ -123,6 +138,11 @@ export default {
   padding: 1rem;
   border-radius: 8px;
   color: #fff;
+}
+.form-opt-email {
+  padding-top: 30px;
+  padding-bottom: 15px;
+  min-width: 20rem;
 }
 .form-opt {
   padding-bottom: 15px;
