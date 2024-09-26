@@ -3,8 +3,8 @@ import axios from 'axios'
 
 const store = createStore({
   state: {
-    role: 0,
-    user: null,
+    role: localStorage.getItem('role') || 0,
+    user: JSON.parse(localStorage.getItem('user')) || {}, 
     customer_items: [],
     employee_items: [],
     login_items: [],
@@ -48,7 +48,7 @@ const store = createStore({
         axios.get("http://localhost:3030/Employees/")
           .then((res) => {
             console.log(res);
-            this.state.employees_items = res.data;
+            this.state.employee_items = res.data;
           })
           .catch((err) => {
             console.log(err)
@@ -93,6 +93,21 @@ const store = createStore({
   },
 
   actions: {
+    login({ commit }, newData){
+      console.log(newData)
+      localStorage.setItem('user', JSON.stringify(newData.user))
+      localStorage.setItem('role', newData.role)
+      commit('update_user', newData.user)
+      commit('update_role', newData.role)
+    },
+
+    logout({ commit }){
+      localStorage.removeItem('user')
+      localStorage.removeItem('role')
+      commit('update_user', {})
+      commit('update_role', 0)
+    },
+
     getCustomers({ commit }) {
       commit('get_customers')
     },

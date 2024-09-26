@@ -1,6 +1,9 @@
 <template>
   <v-container class="account-con">
     <h2>Customer Account Information</h2>
+    User logged in - {{ user }}
+    <br />
+    Role - {{ role }}
     <v-form ref="form">
       <v-text-field
         class="form-opt"
@@ -45,6 +48,32 @@ export default {
       (value) => !!value || "Field cannot be empty!",
     ],
   }),
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+    team_items() {
+      return this.$store.getters.team_items;
+    }
+  },
+  mounted() {
+    this.$store
+      .dispatch("getLogins")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$store
+      .dispatch("getTeams")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   methods: {
     handleUpdate() {
       if (this.email && this.id) {

@@ -13,6 +13,7 @@ const express = require('express');
 
 // Initialize Express server
 const app = express();
+app.use(express.json())
 app.use(cors())
 const port = 3030;
 
@@ -47,7 +48,6 @@ app.get("/Employees", async (req, res) => {
     await dbConn.then((conn) => {
         console.log("Getting Employees")
         conn.query(`SELECT * FROM Employee`, (err, result) => {
-            console.log("Entered query")
             if (err) console.log(err);
             console.log("Got Employees");
             res.send(result)
@@ -59,7 +59,6 @@ app.get("/Teams", async (req, res) => {
     await dbConn.then((conn) => {
         console.log("Getting Teams")
         conn.query(`SELECT * FROM Team`, (err, result) => {
-            console.log("Entered query")
             if (err) console.log(err);
             console.log("Got Teams");
             res.send(result)
@@ -69,11 +68,10 @@ app.get("/Teams", async (req, res) => {
 
 app.get("/Games", async (req, res) => {
     await dbConn.then((conn) => {
-        console.log("Getting Teams")
+        console.log("Getting Games")
         conn.query(`SELECT * FROM Application`, (err, result) => {
-            console.log("Entered query")
             if (err) console.log(err);
-            console.log("Got Teams");
+            console.log("Got Games");
             res.send(result)
         })
     })

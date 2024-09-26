@@ -22,7 +22,7 @@
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
-
+{{ todayDate }}
     <v-item-group selected-class="bg-primary">
       <v-container>
         <v-row>
@@ -103,7 +103,7 @@ export default {
 
     isActive() {
       let activeGames = [];
-      this.game_items.forEach((game) => {
+      Array(this.game_items).forEach((game) => {
         if (moment(game.release_date).isBefore(this.todayDate))
           activeGames.push(game);
       });

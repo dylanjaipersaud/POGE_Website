@@ -31,15 +31,15 @@
         required
       >
       </v-text-field>
-      {{ email }}
+      <!-- {{ email }}
       <br />
       {{ id }}
       <br />
-      {{ login_items }}
+      {{ employee_items }}
       <br />
       {{ role }}
       <br />
-      {{ user }}
+      {{ user }} -->
       <v-btn type="submit" class="login-btn" @click="accountLookUp"
         >Login</v-btn
       >
@@ -60,19 +60,17 @@
 export default {
   data: () => ({
     // Customer login test
-    // email: "mako1902@ymail.com",
-    // id: 6590559,
+    email: "mako1902@ymail.com",
+    id: 6590559,
 
     // Employee login test
-    email: "goodneighbor@poge.com",
-    id: 1092,
+    // email: "goodneighbor@poge.com",
+    // id: 1092,
 
     // Tech Lead login test
     // email: "mjersey@poge.com",
     // id: 8422,
 
-
-    // holdCustomer: {},
     rules: [
       (value) => {
         if (value) return true;
@@ -80,6 +78,7 @@ export default {
         return "Field cannot be empty!";
       },
     ],
+
     invalidAuth: false,
   }),
   computed: {
@@ -88,6 +87,12 @@ export default {
     },
     team_items() {
       return this.$store.getters.team_items;
+    },
+    employee_items() {
+      return this.$store.getters.employee_items;
+    },
+    customer_items() {
+      return this.$store.getters.customer_items;
     },
     role() {
       return this.$store.state.role;
@@ -105,8 +110,24 @@ export default {
       .catch((err) => {
         console.log(err);
       });
-      this.$store
+    this.$store
       .dispatch("getTeams")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$store
+      .dispatch("getEmployees")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$store
+      .dispatch("getCustomers")
       .then((res) => {
         console.log(res);
       })
@@ -115,35 +136,64 @@ export default {
       });
   },
   methods: {
+    // Determines if the account exists by comparing the id to
+    // the elements in 'login_items'
+    // If valid, the role gets determined
+    // If it is not valid, the id is cleared to fail validation and
+    // the user is prompted their authentication failed
     accountLookUp() {
       const holdUser = this.login_items.find((item) => {
-        console.log(item);
+        // console.log(item);
         return item.id == this.id;
       });
       if (holdUser.email == this.email) {
-        alert("User Authenticated");
+        // alert("User Authenticated");
         this.$store.commit("update_user", holdUser);
         this.getUserRole();
-      } else{
+      } else {
         this.invalidAuth = true;
         this.id = null;
         this.$refs.form.validate();
-      };
+      }
     },
 
+    // Obtains the user's role determined by their email address
+    // If it does not contain 'poge.com' they are a customer and
+    // role is set to 3
+    // If it does match, the user's id is compared to manager id's
+    // If there is a match between IDs, the user is a tech lead
+    // and role is set to 1
+    // If there is no match, the user is an employee and role is
+    // set to 2
     getUserRole() {
+      let holdData = {
+        user: null, 
+        role: 0
+      }
       const empEmail = "poge.com";
       const emailAddress = this.email.substring(this.email.indexOf("@") + 1);
+
+      // Checking if the user is a customer
       if (empEmail != emailAddress) {
-        this.$store.commit("update_role", 1);
+        holdData.user = this.customer_items.find((item) => {
+          return item.id == this.id;
+        });
+        holdData.role = 3;
+        this.$store.dispatch("login", holdData);
       } else {
+        holdData.role = 2;
+        holdData.user = this.employee_items.find((item) => {
+            return item.id == this.id;
+          });
         const holdLead = this.team_items.find((item) => {
-            return item.manager == this.id;
-          } )
-          console.log(holdLead);
-        if (holdLead != undefined) {
-          this.$store.commit("update_role", 3);
-        } else this.$store.commit("update_role", 2);
+          return item.manager == holdData.user.id;
+        });
+
+        // Checking if the user is a tech lead
+        if (holdLead != undefined) holdData.role = 1;
+
+        // Returning the user as an employee or lead
+        this.$store.dispatch("login", holdData);
       }
     },
   },

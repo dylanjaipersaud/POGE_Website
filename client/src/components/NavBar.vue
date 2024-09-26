@@ -17,11 +17,14 @@
         ></v-text-field>
 
         <!-- Buttons -->
-        <v-btn @click="toggleSearch"><v-icon icon="mdi-magnify"></v-icon></v-btn>
-        <router-link v-if="user == null" to="/LoginView" class="router-link-deco">
+        <v-btn @click="toggleSearch">
+            <v-icon icon="mdi-magnify" v-if="!showSearch"></v-icon>
+            <v-icon icon="mdi-cancel" v-else></v-icon>
+        </v-btn>
+        <router-link v-if="role == 0" to="/LoginView" class="router-link-deco">
             <v-btn>Login</v-btn>
         </router-link>
-        <router-link v-else to="/LoginView" class="router-link-deco">
+        <router-link v-else :to="getView()" class="router-link-deco">
             <v-btn><v-icon icon="mdi-account-box-outline"></v-icon></v-btn>
         </router-link>
     </v-toolbar>
@@ -34,13 +37,19 @@ export default {
         showSearch: false // Initially set to false
     }),
     computed: {
-        user(){
-      return this.$store.state.user;
+    role(){
+      return this.$store.state.role;
     }
     },
     methods: {
         toggleSearch() {
             this.showSearch = !this.showSearch; // Toggle search bar visibility
+        },
+        getView(){
+            if(this.role == 3) return "/CustomerAccView"
+            else if(this.role == 2) return "/EmployeeAccView"
+            else if(this.role == 1) return "/LeadAccView"
+            else return "/LoginView"
         }
     }
 }
