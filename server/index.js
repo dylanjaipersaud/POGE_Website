@@ -79,20 +79,34 @@ app.get("/Games", async (req, res) => {
     })
 })
 
-// Gets all Customers
+// Gets all Customers and Employee Logins (id, email)
 app.get("/LoginList", async (req, res) => {
+    let holdLoginItems = [];
     await dbConn.then((conn) => {
-        console.log("Getting Customers")
-        conn.query(`SELECT id, email FROM Customer, Employee `, (err, result) => {
-            console.log("Entered query")
+        console.log("Getting Logins")
+        conn.query(`SELECT id, email FROM Customer `, (err, result) => {
             if (err) console.log(err);
-            console.log("SQL Query Result-> ", result);
-            res.send(result)
+            holdLoginItems = holdLoginItems.concat(result);
         })
     })
-    .catch(err =>
-        console.log("error ocurred", err)
-    )
+        .catch(err =>
+            console.log("An error ocurred", err)
+        )
+
+    await dbConn.then((conn) => {
+        conn.query(`SELECT id, email FROM Employee `, (err, result) => {
+            if (err) console.log(err);
+            if (holdLoginItems.length == 0) console.log("Failed to get Customers login")
+            else {
+                console.log("Got Logins");
+                holdLoginItems = holdLoginItems.concat(result);
+                res.send(holdLoginItems);
+            }
+        })
+    })
+        .catch(err =>
+            console.log("An error ocurred", err)
+        )
 })
 
 app.use((err, req, res, next) => {

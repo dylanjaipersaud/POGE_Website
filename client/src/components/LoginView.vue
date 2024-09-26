@@ -31,16 +31,15 @@
         required
       >
       </v-text-field>
-      <!-- {{ email }}
+      {{ email }}
       <br />
       {{ id }}
       <br />
-      {{ customer_items }}
+      {{ login_items }}
       <br />
-      {{ holdCustomer }} 
-       {{ role }}
-       <br>
-       {{ user }} -->
+      {{ role }}
+      <br />
+      {{ user }}
       <v-btn type="submit" class="login-btn" @click="accountLookUp"
         >Login</v-btn
       >
@@ -48,17 +47,32 @@
   </v-container>
   <v-container v-else>
     User logged in - {{ user }}
+    <br />
+    Role - {{ role }}
   </v-container>
 </template>
 
 <script>
+// import { indexOf } from 'core-js/core/array';
+
 // import axios from "axios";
 
 export default {
   data: () => ({
-    email: "mako1902@ymail.com",
-    id: 6590559,
-    holdCustomer: {},
+    // Customer login test
+    // email: "mako1902@ymail.com",
+    // id: 6590559,
+
+    // Employee login test
+    email: "goodneighbor@poge.com",
+    id: 1092,
+
+    // Tech Lead login test
+    // email: "mjersey@poge.com",
+    // id: 8422,
+
+
+    // holdCustomer: {},
     rules: [
       (value) => {
         if (value) return true;
@@ -69,19 +83,30 @@ export default {
     invalidAuth: false,
   }),
   computed: {
-    customer_items() {
-      return this.$store.getters.customer_items;
+    login_items() {
+      return this.$store.getters.login_items;
     },
-    role(){
+    team_items() {
+      return this.$store.getters.team_items;
+    },
+    role() {
       return this.$store.state.role;
     },
-    user(){
+    user() {
       return this.$store.state.user;
-    }
+    },
   },
   mounted() {
     this.$store
-      .dispatch("getCustomers")
+      .dispatch("getLogins")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      this.$store
+      .dispatch("getTeams")
       .then((res) => {
         console.log(res);
       })
@@ -91,19 +116,36 @@ export default {
   },
   methods: {
     accountLookUp() {
-      const holdUser = this.customer_items.find((item) => {
+      const holdUser = this.login_items.find((item) => {
         console.log(item);
         return item.id == this.id;
       });
       if (holdUser.email == this.email) {
         alert("User Authenticated");
-        this.$store.commit('update_user', holdUser);
-        this.$store.commit('update_role', 1);
-        alert(this.user);
-      } else this.invalidAuth = true;
+        this.$store.commit("update_user", holdUser);
+        this.getUserRole();
+      } else{
+        this.invalidAuth = true;
+        this.id = null;
+        this.$refs.form.validate();
+      };
     },
 
-    getUserRole(){},
+    getUserRole() {
+      const empEmail = "poge.com";
+      const emailAddress = this.email.substring(this.email.indexOf("@") + 1);
+      if (empEmail != emailAddress) {
+        this.$store.commit("update_role", 1);
+      } else {
+        const holdLead = this.team_items.find((item) => {
+            return item.manager == this.id;
+          } )
+          console.log(holdLead);
+        if (holdLead != undefined) {
+          this.$store.commit("update_role", 3);
+        } else this.$store.commit("update_role", 2);
+      }
+    },
   },
 
   // props: [],
