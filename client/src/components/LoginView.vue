@@ -142,15 +142,29 @@ export default {
     // If it is not valid, the id is cleared to fail validation and
     // the user is prompted their authentication failed
     accountLookUp() {
-      const holdUser = this.login_items.find((item) => {
-        // console.log(item);
-        return item.id == this.id;
-      });
+
+      //Find the user's login details based on their id
+      let holdUser = { email: "", id: 0}
+      for(let i = 0; i < this.login_items.length; i++){
+        if(this.id == this.login_items[i].id){
+          holdUser = this.login_items[i]
+        }
+      }
+
+      // Alternative method used to find login details
+      // const holdUser = Array(this.login_items).find((item) => {
+        
+      //   return item.id == this.id;
+      // });
+
+      // If the user's id was matched, match the email
       if (holdUser.email == this.email) {
         // alert("User Authenticated");
         this.$store.commit("update_user", holdUser);
         this.getUserRole();
-      } else {
+      } 
+      // If the emails do not match, the user is invalidated
+      else {
         this.invalidAuth = true;
         this.id = null;
         this.$refs.form.validate();
@@ -180,7 +194,9 @@ export default {
         });
         holdData.role = 3;
         this.$store.dispatch("login", holdData);
-      } else {
+      } 
+      // If the user is not a customer, they are an employee
+      else {
         holdData.role = 2;
         holdData.user = this.employee_items.find((item) => {
             return item.id == this.id;
@@ -189,7 +205,7 @@ export default {
           return item.manager == holdData.user.id;
         });
 
-        // Checking if the user is a tech lead
+        // Checking if the employee is a tech lead
         if (holdLead != undefined) holdData.role = 1;
 
         // Returning the user as an employee or lead
@@ -197,8 +213,6 @@ export default {
       }
     },
   },
-
-  // props: [],
 };
 </script>
 
