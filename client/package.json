@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@babel/preset-env": "^7.25.4",
     "@eslint/js": "^9.11.0",
     "@mdi/font": "^7.4.47",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -31,15 +32,15 @@
     "@vue/cli-plugin-unit-jest": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "@vue/test-utils": "^2.0.0-0",
+    "@vue/test-utils": "^2.4.6",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "^27.5.1",
     "cypress": "^9.7.0",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.28.0",
     "eslint-plugin-vuetify": "^2.4.0",
     "globals": "^15.9.0",
-    "jest": "^27.0.5"
+    "jest": "^27.5.1"
   },
   "eslintConfig": {
     "root": true,
