@@ -3,26 +3,35 @@
     <h1>POG Entertainment</h1>
     <h2>Top Games of the Week</h2>
     <v-carousel
-      height="400"
+      height="50%"
       show-arrows="hover"
       cycle
       interval="3000"
       hide-delimiter-background
     >
       <v-carousel-item v-for="game in top_games" :key="game.id">
-        <v-sheet :color="game.color" height="100%">
-          <div class="d-flex justify-center align-center">
-            <img
-              v-if="game.image"
+        <v-sheet>
+          <div>
+            <v-img
               :src="game.image"
+              height="500px"
               alt="Game Image"
               class="game-image"
-            />
+            >
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                    color="grey-4"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              </template>
+            </v-img>
           </div>
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
-{{ todayDate }}
+    {{ todayDate }}
     <v-item-group selected-class="bg-primary">
       <v-container>
         <v-row>
@@ -62,18 +71,22 @@
 
 <script>
 import moment from "moment";
+import * as gameImages from "../assets/covers/imageImport";
 export default {
   data: () => ({
     todayDate: null,
     top_games: [
       {
-        image: require("@/assets/hades.avif"),
+        game: "BunkerNite",
+        image: gameImages.bunker_img,
       },
       {
-        image: require("@/assets/25.jpg"),
+        game: "Squirrel Brawl",
+        image: "",
       },
       {
-        image: require("@/assets/sonic.jpg"),
+        game: "Golf With Robots",
+        image: gameImages.golf_img,
       },
     ],
   }),
