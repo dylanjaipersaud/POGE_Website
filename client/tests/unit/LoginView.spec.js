@@ -155,4 +155,46 @@ describe('LoginComponent.vue', () => {
 
         expect(wrapper.vm.invalidAuth).toBe(true);
     });
+    
+// Add this to your existing tests
+describe('getUserRole', () => {
+    let wrapper;
+
+    beforeEach(() => {
+        wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+    });
+
+    it('should set role to 3 for a customer', () => {
+        wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
+        wrapper.vm.getUserRole();
+
+        expect(store.state.role).toBe(3);
+        expect(store.state.user.email).toBe('reshmac001@gmail.com');
+    });
+
+    it('should set role to 2 for a regular employee', () => {
+        wrapper.setData({ email: 'goodneighbor@poge.com', id: 1092 });
+        wrapper.vm.getUserRole();
+
+        expect(store.state.role).toBe(2);
+        expect(store.state.user.email).toBe('goodneighbor@poge.com');
+    });
+
+    it('should set role to 1 for a tech lead', () => {
+        wrapper.setData({ email: 'mjersey@poge.com', id: 8422 });
+        wrapper.vm.getUserRole();
+
+        expect(store.state.role).toBe(1);
+        expect(store.state.user.email).toBe('mjersey@poge.com');
+    });
+
+    //it('should not set a valid role for an unknown user', () => {
+       // wrapper.setData({ email: 'unknown@poge.com', id: 9999 });
+       // wrapper.vm.getUserRole();
+       
+       // expect(store.state.role).toBe(0); // Assuming 0 is the default role
+       // expect(wrapper.vm.invalidAuth).toBe(true);
+   // });
+});
+
 });
