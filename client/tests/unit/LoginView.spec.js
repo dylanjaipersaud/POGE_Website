@@ -156,7 +156,6 @@ describe('LoginComponent.vue', () => {
         expect(wrapper.vm.invalidAuth).toBe(true);
     });
     
-// Add this to your existing tests
 describe('getUserRole', () => {
     let wrapper;
 
@@ -195,6 +194,8 @@ describe('getUserRole', () => {
        // expect(store.state.role).toBe(0); // Assuming 0 is the default role
        // expect(wrapper.vm.invalidAuth).toBe(true);
    // });
+
+//tried to add this test but the id isnt recognized for obvious reasons
 });
 
 });
