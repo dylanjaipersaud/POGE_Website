@@ -9,7 +9,7 @@
         <v-btn @click="logoutUser">Logout</v-btn>
       </div>
     </div>
-    <v-form ref="form" class="form-con">
+    <v-form ref="form" class="form-con" v-if="!editMode">
       <v-text-field
         class="form-opt"
         label="Email"
@@ -18,7 +18,8 @@
         :rules="rules"
         persistent-hint
         clearable
-        v-model="user.email"
+        disabled
+        v-model="newUserData.email"
         required
       >
       </v-text-field>
@@ -31,24 +32,73 @@
         :rules="rules"
         persistent-hint
         clearable
-        v-model="user.id"
+        disabled
+        v-model="newUserData.id"
         required
       >
       </v-text-field>
 
-      <v-btn type="submit" class="update-btn" @click="handleUpdate"
+      <v-text-field
+        class="form-opt"
+        label="Account ID"
+        prepend-icon="mdi-pencil"
+        hint="Edit your account name"
+        :rules="rules"
+        persistent-hint
+        clearable
+        v-model="newUserData.account_name"
+        required
+      >
+      </v-text-field>
+
+      <v-text-field
+        class="form-opt"
+        label="Account ID"
+        prepend-icon="mdi-pencil"
+        hint="Edit your first name"
+        :rules="rules"
+        persistent-hint
+        clearable
+        v-model="newUserData.first_name"
+        required
+      >
+      </v-text-field>
+
+      <v-text-field
+        class="form-opt"
+        label="Account ID"
+        prepend-icon="mdi-pencil"
+        hint="Edit your last name"
+        :rules="rules"
+        persistent-hint
+        clearable
+        v-model="newUserData.last_name"
+        required
+      >
+      </v-text-field>
+
+      <v-row justify="center">
+        <v-btn type="submit" class="update-btn" @click="handleUpdate"
         >Update Information</v-btn
       >
-    </v-form>
-    <router-link to="/">
+      <v-spacer></v-spacer>
       <v-btn class="back-btn">Cancel</v-btn>
-    </router-link>
+      </v-row>
+    </v-form>
   </v-container>
 </template>
   
   <script>
 export default {
   data: () => ({
+    editMode: false,
+    newUserData: {
+      email: "",
+      id: 0,
+      account_name: "",
+      first_name: "",
+      last_name: ""
+    },
     email: null,
     id: null,
     rules: [(value) => !!value || "Field cannot be empty!"],
@@ -57,6 +107,9 @@ export default {
     user() {
       return this.$store.state.user;
     },
+  },
+  mounted(){
+    this.newUserData = this.user;
   },
   methods: {
     handleUpdate() {

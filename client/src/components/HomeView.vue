@@ -3,8 +3,8 @@
     <h1>POG Entertainment</h1>
     <h2>Top Games of the Week</h2>
     <v-carousel
-      height="50%"
       show-arrows="hover"
+      continuous
       cycle
       interval="3000"
       hide-delimiter-background
@@ -35,11 +35,11 @@
     <v-item-group selected-class="bg-primary">
       <v-container>
         <v-row>
-          <v-col v-for="game in isActive()" :key="game.game" cols="12" md="4">
+          <v-col v-for="game in activeGames" :key="game.game" cols="12" md="4">
             <v-item>
               <v-card
                 :class="['d-flex align-center']"
-                height="200"
+                height="200px"
                 dark
                 @click="toggle"
               >
@@ -53,9 +53,9 @@
       </v-container>
     </v-item-group>
     <v-row align="start" style="height: 150px">
-      <v-col v-for="game in isActive()" :key="game.game" cols="4">
+      <v-col v-for="game in game_items"  :key="game.game" cols="4">
         <v-card
-          :class="['d-flex align-center', selectedClass]"
+          :class="['d-flex align-center']"
           height="200"
           dark
           color="red"
@@ -75,6 +75,7 @@ import * as gameImages from "../assets/covers/imageImport";
 export default {
   data: () => ({
     todayDate: null,
+    activeGames: [],
     top_games: [
       {
         game: "BunkerNite",
@@ -82,7 +83,7 @@ export default {
       },
       {
         game: "Squirrel Brawl",
-        image: "",
+        image: gameImages.squirrel_img,
       },
       {
         game: "Golf With Robots",
@@ -93,6 +94,14 @@ export default {
 
   computed: {
     game_items() {
+      // let hold = this.$store.getters.game_items;
+      // let activeGames = [];
+      // Array(hold).forEach((game) => {
+      //   if (moment(game.release_date).isBefore(this.todayDate))
+      //     activeGames.push(game);
+      // });
+      // return activeGames;
+
       return this.$store.getters.game_items;
     },
   },
@@ -102,6 +111,8 @@ export default {
       .dispatch("getGames")
       .then((res) => {
         console.log(res);
+        
+    this.activeGames = this.isActive()
       })
       .catch((err) => {
         console.log(err);
@@ -117,6 +128,7 @@ export default {
     isActive() {
       let activeGames = [];
       Array(this.game_items).forEach((game) => {
+        console.log(game.game)
         if (moment(game.release_date).isBefore(this.todayDate))
           activeGames.push(game);
       });

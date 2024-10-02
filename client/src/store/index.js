@@ -24,10 +24,12 @@ const store = createStore({
 
   mutations: {
     update_user(state, newUser) {
+      localStorage.setItem('user', JSON.stringify(newUser))
       state.user = newUser;
     },
 
     update_role(state, newRole) {
+      localStorage.setItem('role', newRole)
       state.role = newRole;
     },
 
@@ -89,14 +91,23 @@ const store = createStore({
           .catch((err) => {
             console.log(err)
           })
-    }
+    },
+
+    // put_employee(state, newData){
+    //   axios.put("http://localhost:3030/Teams/", newData)
+    //   .then((res) => {
+    //     console.log(res);
+    //     this.state.team_items = res.data;
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+    // }
   },
 
   actions: {
     login({ commit }, newData){
       console.log(newData)
-      localStorage.setItem('user', JSON.stringify(newData.user))
-      localStorage.setItem('role', newData.role)
       commit('update_user', newData.user)
       commit('update_role', newData.role)
     },

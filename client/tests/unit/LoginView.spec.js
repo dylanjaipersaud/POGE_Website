@@ -9,11 +9,14 @@ import LoginView from '@/components/LoginView.vue';
 const vuetify = createVuetify({
     components,
     directives,
-  })
+})
 
 describe('LoginComponent.vue', () => {
     let store;
 
+    /*
+    *   Initializing test suite
+    */
     beforeEach(() => {
         store = createStore({
             state: {
@@ -30,7 +33,7 @@ describe('LoginComponent.vue', () => {
                     { team_name: 'ActiSight', budget: 550000, manager: 6924 },
                     { team_name: 'LowRez', budget: 180000, manager: 8422 },
                 ],
-                employee_items:[
+                employee_items: [
                     { id: 8422, email: 'mjersey@poge.com' },
                     { id: 1092, email: 'goodneighbor@poge.com' },
                 ],
@@ -73,10 +76,6 @@ describe('LoginComponent.vue', () => {
                 get_customers(state) {
                     return state.customer_items;
                 },
-                // login: jest.fn((context, payload) => {
-                //     state.role = payload.role;
-                //     state.user = payload.user;
-                // }),
             },
 
             actions: {
@@ -110,12 +109,13 @@ describe('LoginComponent.vue', () => {
         });
     });
 
+    /*
+    *   Testing accountLookUp function
+    */
     it('should authenticate mjersey as tech lead (role = 1)', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
 
-
         wrapper.setData({ email: 'mjersey@poge.com', id: 8422 });
-
         wrapper.vm.accountLookUp();
 
         expect(store.state.role).toBe(1);
@@ -125,9 +125,7 @@ describe('LoginComponent.vue', () => {
     it('should authenticate goodneighbor as employee (role = 2)', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
 
-
         wrapper.setData({ email: 'goodneighbor@poge.com', id: 1092 });
-
         wrapper.vm.accountLookUp();
 
         expect(store.state.role).toBe(2);
@@ -137,9 +135,7 @@ describe('LoginComponent.vue', () => {
     it('should authenticate reshmac001 as customer (role = 3)', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
 
-
         wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
-
         wrapper.vm.accountLookUp();
 
         expect(store.state.role).toBe(3);
@@ -150,20 +146,18 @@ describe('LoginComponent.vue', () => {
         const wrapper = mount(LoginView, { global: { plugins: [store, vuetify] } });
 
         wrapper.setData({ email: 'invalid@poge.com', id: 123456 });
-
         wrapper.vm.accountLookUp();
 
         expect(wrapper.vm.invalidAuth).toBe(true);
     });
-    
-describe('getUserRole', () => {
-    let wrapper;
 
-    beforeEach(() => {
-        wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
-    });
 
+    /*
+    *   Testing getUserRole function
+    */
     it('should set role to 3 for a customer', () => {
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+
         wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
         wrapper.vm.getUserRole();
 
@@ -172,6 +166,8 @@ describe('getUserRole', () => {
     });
 
     it('should set role to 2 for a regular employee', () => {
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+
         wrapper.setData({ email: 'goodneighbor@poge.com', id: 1092 });
         wrapper.vm.getUserRole();
 
@@ -180,6 +176,8 @@ describe('getUserRole', () => {
     });
 
     it('should set role to 1 for a tech lead', () => {
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+
         wrapper.setData({ email: 'mjersey@poge.com', id: 8422 });
         wrapper.vm.getUserRole();
 
@@ -187,15 +185,22 @@ describe('getUserRole', () => {
         expect(store.state.user.email).toBe('mjersey@poge.com');
     });
 
-    //it('should not set a valid role for an unknown user', () => {
-       // wrapper.setData({ email: 'unknown@poge.com', id: 9999 });
-       // wrapper.vm.getUserRole();
-       
-       // expect(store.state.role).toBe(0); // Assuming 0 is the default role
-       // expect(wrapper.vm.invalidAuth).toBe(true);
-   // });
+    // describe('getUserRole', () => {
+    //     let wrapper;
 
-//tried to add this test but the id isnt recognized for obvious reasons
-});
+    //     beforeEach(() => {
+    //         wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+    //     });
+
+    // it('should not set a valid role for an unknown user', () => {
+    // wrapper.setData({ email: 'unknown@poge.com', id: 9999 });
+    // wrapper.vm.getUserRole();
+
+    // expect(store.state.role).toBe(0); // Assuming 0 is the default role
+    // expect(wrapper.vm.invalidAuth).toBe(true);
+    // });
+
+    //tried to add this test but the id isnt recognized for obvious reasons
+    // });
 
 });
