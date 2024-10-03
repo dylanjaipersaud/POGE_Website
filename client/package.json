@@ -83,7 +83,8 @@
     "transformIgnorePatterns": ["/node_modules/(?!(vuetify)/)"],
     "moduleNameMapper": {
       "^vuetify/components$": "<rootDir>/node_modules/vuetify/lib/components/index.mjs",
-      "^vuetify/directives$": "<rootDir>/node_modules/vuetify/lib/directives/index.mjs"
+      "^vuetify/directives$": "<rootDir>/node_modules/vuetify/lib/directives/index.mjs",
+      "^axios$": "axios/dist/node/axios.cjs"
     }
   }
 }

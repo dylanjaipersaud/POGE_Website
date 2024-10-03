@@ -64,12 +64,12 @@ export default {
     // id: 6590559,
 
     // Employee login test
-    email: "joshypoo@poge.com",
-    id: 8375,
+    // email: "joshypoo@poge.com",
+    // id: 8375,
 
     // Tech Lead login test
-    // email: "gamermaster@poge.com",
-    // id: 8829,
+    email: "gamermaster@poge.com",
+    id: 8829,
 
     rules: [
       (value) => {

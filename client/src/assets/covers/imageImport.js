@@ -8,14 +8,43 @@ import squirrel_img from './squirrel_img.jpg'
 import sports_img from './sports_img.jpg'
 import upwatch_img from './upwatch_img.jpg'
 
-export{
-    bunker_img,
-    cola_img,
-    command_img,
-    dims4_img,
-    gods_img,
-    golf_img,
-    squirrel_img,
-    sports_img,
-    upwatch_img
-}
+const holdGameImg = [
+    {
+        name: "BunkerNite",
+        img: bunker_img
+    },
+    {
+        name: "Cola El Machbros",
+        img: cola_img
+    },
+    {
+        name: "Command of Duty",
+        img: command_img
+    },
+    {
+        name: "Dims4",
+        img: dims4_img
+    },
+    {
+        name: "Gods Unite",
+        img: gods_img
+    },
+    {
+        name: "Golf With Robots",
+        img: golf_img
+    },
+    {
+        name: "Squirrel Brawl",
+        img: squirrel_img
+    },
+    {
+        name: "Super Sports Pro",
+        img: sports_img
+    },
+    {
+        name: "UpWatch",
+        img: upwatch_img
+    },
+]
+
+export default holdGameImg;

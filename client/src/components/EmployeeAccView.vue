@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h3>Tech Lead Account Information</h3>
+    <h3>Employee Account Information</h3>
     <div class="header-con">
       <h2>Welcome {{ user.first_name }}</h2>
       <v-spacer></v-spacer>
@@ -291,6 +291,7 @@ export default {
           console.log(err.toJSON());
         });
     },
+    
     reassignEmp(empInfo) {
       this.selectedEmp = empInfo;
       if (!this.editTeam) this.editTeam = !this.editTeam;

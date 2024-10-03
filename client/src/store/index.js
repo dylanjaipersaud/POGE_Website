@@ -24,8 +24,10 @@ const store = createStore({
 
   mutations: {
     update_user(state, newUser) {
+      
       localStorage.setItem('user', JSON.stringify(newUser))
       state.user = newUser;
+      console.log("Updated user")
     },
 
     update_role(state, newRole) {

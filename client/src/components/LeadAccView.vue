@@ -5,7 +5,7 @@
       <h2>Welcome {{ user.first_name }}</h2>
       <v-spacer></v-spacer>
       <div>
-        <v-btn @click="editUser">Edit</v-btn>
+        <v-btn @click="editUser()">Edit</v-btn>
         <v-btn @click="logoutUser">Logout</v-btn>
       </div>
     </div>
@@ -22,7 +22,8 @@
         required
       >
       </v-text-field>
-
+      <!-- http://localhost:3030/Employees?id=8829&first_name=Larry&last_name=Moren0&phone=5659229015&role=Developer&team_name=LowRez -->
+      <!-- http://localhost:3030/Employees?id=8829&first_name=Larry&last_name=Moren0&phone=5659229015&role=Developer&team_name=LowRez -->
       <v-text-field
         class="form-opt"
         label="Account ID"
@@ -99,7 +100,6 @@
         required
       >
       </v-text-field>
-      {{ newUserData }}
       <v-row class="btn-list" justify="space-evenly">
         <v-btn type="submit" @click="updateUser()">Update Information</v-btn>
         <!-- <v-btn>Cancel</v-btn> -->
@@ -161,7 +161,7 @@
         >
         <v-card-text>
           <h4>New Team</h4>
-          <v-col>
+          <v-col style="width: 50%;">
             <v-select
               :items="team_items"
               item-title="team_name"
@@ -263,7 +263,6 @@ export default {
         last_name: this.user.last_name,
         phone: this.user.phone,
         role: this.user.role,
-        salary: this.user.salary,
         team_name: this.user.team_name,
       };
       this.editMode = !this.editMode;
@@ -314,6 +313,7 @@ export default {
             });
           this.editTeam = !this.editTeam;
           this.selectedEmp = {};
+          this.selectedTeam = this.newTeam;
         })
         .catch((err) => {
           console.log(err.toJSON());

@@ -53,16 +53,24 @@
       </v-container>
     </v-item-group>
     <v-row align="start" style="height: 150px">
-      <v-col v-for="game in game_items"  :key="game.game" cols="4">
-        <v-card
-          :class="['d-flex align-center']"
-          height="200"
-          dark
-          color="red"
-        >
-          <template v-slot:text>
+      <v-col v-for="game in game_items" :key="game.game" cols="4">
+        <v-card >
+          <v-img
+            class="bg-grey-lighten-2"
+            :src="getImg(game.game)"
+          >
+            <template v-slot:placeholder>
+              <div class="d-flex align-center justify-center fill-height">
+                <v-progress-circular
+                  color="grey-4"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+            </template>
+          </v-img>
+          <v-card-title>
             {{ game.game }}
-          </template>
+          </v-card-title>
         </v-card>
       </v-col>
     </v-row>
@@ -71,7 +79,7 @@
 
 <script>
 import moment from "moment";
-import * as gameImages from "../assets/covers/imageImport";
+import gameImages from "../assets/covers/imageImport";
 export default {
   data: () => ({
     todayDate: null,
@@ -79,15 +87,15 @@ export default {
     top_games: [
       {
         game: "BunkerNite",
-        image: gameImages.bunker_img,
+        image: gameImages[0].img,
       },
       {
         game: "Squirrel Brawl",
-        image: gameImages.squirrel_img,
+        image: gameImages[5].img,
       },
       {
         game: "Golf With Robots",
-        image: gameImages.golf_img,
+        image: gameImages[6].img,
       },
     ],
   }),
@@ -111,8 +119,8 @@ export default {
       .dispatch("getGames")
       .then((res) => {
         console.log(res);
-        
-    this.activeGames = this.isActive()
+
+        this.activeGames = this.isActive();
       })
       .catch((err) => {
         console.log(err);
@@ -125,10 +133,20 @@ export default {
       this.todayDate = moment();
     },
 
+    getImg(name){
+      for(let i = 0; i < gameImages.length; i++){
+        console.log("checking game")
+        if(name === gameImages[i].name){
+          console.log("found img for", gameImages[i].name)
+          return gameImages[i].img
+        }
+      }
+    },
+
     isActive() {
       let activeGames = [];
       Array(this.game_items).forEach((game) => {
-        console.log(game.game)
+        console.log(game.game);
         if (moment(game.release_date).isBefore(this.todayDate))
           activeGames.push(game);
       });

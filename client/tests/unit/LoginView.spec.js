@@ -5,11 +5,28 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import LoginView from '@/components/LoginView.vue';
+import EmployeeAccView from '@/components/EmployeeAccView.vue';
+import LeadAccView from '@/components/LeadAccView.vue';
+import CustomerAccView from '@/components/CustomerAccView.vue';
+// import router from '@/router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const vuetify = createVuetify({
     components,
     directives,
 })
+
+const router = createRouter({
+    // eslint-disable-next-line no-undef
+    history: createWebHistory(process.env.BASE_URL),
+    routes: [
+        // { path: '/', component: App },
+        { path: '/LoginView', name: LoginView, component: LoginView },
+        { path: '/EmployeeAccView', name: EmployeeAccView, component: EmployeeAccView },
+        { path: '/LeadAccView', name: LeadAccView, component: LeadAccView },
+        { path: '/CustomerAccView', name: CustomerAccView, component: CustomerAccView },
+      ]
+  })
 
 describe('LoginComponent.vue', () => {
     let store;
@@ -113,7 +130,7 @@ describe('LoginComponent.vue', () => {
     *   Testing accountLookUp function
     */
     it('should authenticate mjersey as tech lead (role = 1)', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
         wrapper.setData({ email: 'mjersey@poge.com', id: 8422 });
         wrapper.vm.accountLookUp();
@@ -133,7 +150,7 @@ describe('LoginComponent.vue', () => {
     });
 
     it('should authenticate reshmac001 as customer (role = 3)', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = mount(LoginView, { global: { plugins: [store, vuetify] } });
 
         wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
         wrapper.vm.accountLookUp();
