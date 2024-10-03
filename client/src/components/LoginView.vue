@@ -64,17 +64,16 @@ export default {
     // id: 6590559,
 
     // Employee login test
-    // email: "joshypoo@poge.com",
-    // id: 8375,
+    email: "joshypoo@poge.com",
+    id: 8375,
 
     // Tech Lead login test
-    email: "gamermaster@poge.com",
-    id: 8829,
+    // email: "gamermaster@poge.com",
+    // id: 8829,
 
     rules: [
       (value) => {
         if (value) return true;
-
         return "Field cannot be empty!";
       },
     ],
@@ -142,18 +141,17 @@ export default {
     // If it is not valid, the id is cleared to fail validation and
     // the user is prompted their authentication failed
     accountLookUp() {
-
       //Find the user's login details based on their id
-      let holdUser = { email: "", id: 0}
-      for(let i = 0; i < this.login_items.length; i++){
-        if(this.id == this.login_items[i].id){
-          holdUser = this.login_items[i]
+      let holdUser = { email: "", id: 0 };
+      for (let i = 0; i < this.login_items.length; i++) {
+        if (this.id == this.login_items[i].id) {
+          holdUser = this.login_items[i];
         }
       }
 
       // Alternative method used to find login details
       // const holdUser = Array(this.login_items).find((item) => {
-        
+
       //   return item.id == this.id;
       // });
 
@@ -162,7 +160,7 @@ export default {
         // alert("User Authenticated");
         this.$store.commit("update_user", holdUser);
         this.getUserRole();
-      } 
+      }
       // If the emails do not match, the user is invalidated
       else {
         this.invalidAuth = true;
@@ -181,9 +179,9 @@ export default {
     // set to 2
     getUserRole() {
       let holdData = {
-        user: null, 
-        role: 0
-      }
+        user: null,
+        role: 0,
+      };
       const empEmail = "poge.com";
       const emailAddress = this.email.substring(this.email.indexOf("@") + 1);
 
@@ -194,22 +192,28 @@ export default {
         });
         holdData.role = 3;
         this.$store.dispatch("login", holdData);
-      } 
+        this.$router.push("/CustomerAccView");
+      }
       // If the user is not a customer, they are an employee
       else {
         holdData.role = 2;
         holdData.user = this.employee_items.find((item) => {
-            return item.id == this.id;
-          });
+          return item.id == this.id;
+        });
         const holdLead = this.team_items.find((item) => {
           return item.manager == holdData.user.id;
         });
 
         // Checking if the employee is a tech lead
-        if (holdLead != undefined) holdData.role = 1;
+        if (holdLead != undefined) {
+          holdData.role = 1;
+          this.$store.dispatch("login", holdData);
+          this.$router.push("/LeadAccView");
+        }
 
         // Returning the user as an employee or lead
         this.$store.dispatch("login", holdData);
+        this.$router.push("/EmployeeAccView");
       }
     },
   },

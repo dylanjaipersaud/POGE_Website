@@ -142,29 +142,36 @@
               align="center"
               class="emp-row"
             >
-              <p>
-                {{ emp.first_name }} {{ emp.last_name }}
-              </p>
+              <p>{{ emp.first_name }} {{ emp.last_name }}</p>
               <v-spacer></v-spacer>
               <v-btn
                 :disabled="team.manager == emp.id ? true : false"
                 size="small"
-                @click="updateEmpTeam(emp)"
+                @click="reassignEmp(emp)"
                 >Re-Assign</v-btn
               >
             </v-row>
-            
-            
           </v-expansion-panel-text>
         </v-expansion-panel>
-        
       </v-expansion-panels>
-      <v-card>
-        <v-card-title>Re-assign {{ selectedEmp.first_name }} {{ selectedEmp.last_name }}</v-card-title>
+      <v-card v-if="editTeam">
+        <v-card-title
+          >Re-assign {{ selectedEmp.first_name }}
+          {{ selectedEmp.last_name }}</v-card-title
+        >
         <v-card-text>
-          <v-row>
-            <v-select :items="team_items"></v-select>
-          </v-row>
+          <h4>New Team</h4>
+          <v-col>
+            <v-select
+              :items="team_items"
+              item-title="team_name"
+              item-value="team_name"
+              v-model="newTeam"
+            ></v-select>
+            <v-row>
+              <v-btn @click="updateEmpTeam()">Confirm</v-btn>
+            </v-row>
+          </v-col>
         </v-card-text>
       </v-card>
     </div>
@@ -176,6 +183,7 @@ import axios from "axios";
 export default {
   data: () => ({
     editMode: false,
+    editTeam: false,
     newUserData: {
       email: "",
       id: 0,
@@ -184,7 +192,8 @@ export default {
       last_name: "",
     },
     selectedTeam: "",
-    selectedEmp: { first_name: "jess", last_name: "matt"},
+    newTeam: "",
+    selectedEmp: { first_name: "jess", last_name: "matt" },
     email: null,
     id: null,
     rules: [(value) => !!value || "Field cannot be empty!"],
@@ -223,14 +232,6 @@ export default {
     getEmployees(teamName) {
       let holdEmp = [];
       for (let i = 0; i < this.employee_items.length; i++) {
-        // console.log(
-        //   "Comparing ",
-        //   teamName,
-        //   " to ",
-        //   this.employee_items[i].team_name,
-        //   ": ",
-        //   String(teamName).localeCompare(this.employee_items[i].team_name)
-        // );
         if (
           String(teamName).toLowerCase() ===
           this.employee_items[i].team_name.toLowerCase()
@@ -284,17 +285,22 @@ export default {
             .catch((err) => {
               console.log(err);
             });
-            this.editMode = !this.editMode;
+          this.editMode = !this.editMode;
         })
         .catch((err) => {
           console.log(err.toJSON());
         });
     },
-    updateEmpTeam(empInfo){
-      empInfo.team_name = "4K";
+    reassignEmp(empInfo) {
+      this.selectedEmp = empInfo;
+      if (!this.editTeam) this.editTeam = !this.editTeam;
+    },
+
+    updateEmpTeam() {
+      this.selectedEmp.team_name = this.newTeam;
       axios
         .put("http://localhost:3030/Employees", null, {
-          params: empInfo,
+          params: this.selectedEmp,
         })
         .then((res) => {
           console.log(res);
@@ -306,6 +312,8 @@ export default {
             .catch((err) => {
               console.log(err);
             });
+          this.editTeam = !this.editTeam;
+          this.selectedEmp = {};
         })
         .catch((err) => {
           console.log(err.toJSON());
