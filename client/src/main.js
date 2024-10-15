@@ -1,55 +1,34 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { createApp } from 'vue';
+import App from './App.vue';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
+import 'vuetify/styles';
+import '@mdi/font/css/materialdesignicons.css';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import router from './router';
+import store from './store/index';
+import './file.css'; // Import the global styles
 
-import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import router from './router'
-import store from './store/index'
+createApp(App).use(store).use(router).mount('#app');
 
-
-
-// const CustomTheme = {
-//  dark: true,
-//  colors: {
-//    background: '#FFFFFF',
-//    surface: '#FFFFFF',
-//    'surface-bright': '#FFFFFF',
-//    'surface-light': '#EEEEEE',
-//    'surface-variant': '#424242',
-//    'on-surface-variant': '#EEEEEE',
-//    primary: '#1867C0',
-//    'primary-darken-1': '#1F5592',
-//    secondary: '#48A9A6',
-//    'secondary-darken-1': '#018786',
-//    error: '#B00020',
-//    info: '#2196F3',
-//    success: '#4CAF50',
-//    warning: '#FB8C00',
-//  },
-//  variables: {
-//    'border-color': '#000000',
-//    'border-opacity': 0.12,
-//    'high-emphasis-opacity': 0.87,
-//    'medium-emphasis-opacity': 0.60,
-//    'disabled-opacity': 0.38,
-//    'idle-opacity': 0.04,
-//    'hover-opacity': 0.04,
-//    'focus-opacity': 0.12,
-//    'selected-opacity': 0.08,
-//    'activated-opacity': 0.12,
-//    'pressed-opacity': 0.12,
-//    'dragged-opacity': 0.08,
-//    'theme-kbd': '#212529',
-//    'theme-on-kbd': '#FFFFFF',
-//    'theme-code': '#F5F5F5',
-//    'theme-on-code': '#000000',
-//  }
-// }
+// Define your custom dark blue theme
+const CustomDarkBlueTheme = {
+  dark: true, // Enable dark mode
+  colors: {
+    background: '#121212', // Dark background
+    surface: '#1E1E1E', // Slightly lighter surface
+    primary: '#1976D2', // Dark blue primary color
+    'primary-darken-1': '#0D47A1', // Darker shade of primary
+    secondary: '#BBDEFB', // Light blue secondary color
+    'secondary-darken-1': '#90CAF9', // Darker shade of secondary
+    error: '#B00020',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FB8C00',
+  },
+};
 
 const vuetify = createVuetify({
   components,
@@ -61,14 +40,12 @@ const vuetify = createVuetify({
       mdi,
     },
   },
-  // theme: {
-  //   defaultTheme: 'CustomTheme',
-  //   themes: {
-  //     CustomTheme,
-  //   },
-  // },
+  theme: {
+    defaultTheme: 'CustomDarkBlueTheme', // Set your custom theme as default
+    themes: {
+      CustomDarkBlueTheme,
+    },
+  },
 });
 
-
-createApp(App).use(store).use(router).use(vuetify).mount('#app')
-
+createApp(App).use(store).use(router).use(vuetify).mount('#app');

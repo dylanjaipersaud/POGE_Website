@@ -1,4 +1,3 @@
-
 <template>
     <v-toolbar class="toolbar" elevation="5">
         <v-toolbar-title>POGE</v-toolbar-title>
@@ -34,22 +33,22 @@
 export default {
     data: () => ({
         search: '',
-        showSearch: false // Initially set to false
+        showSearch: false
     }),
     computed: {
-    role(){
-      return this.$store.state.role;
-    }
+        role() {
+            return this.$store.state.role;
+        }
     },
     methods: {
         toggleSearch() {
             this.showSearch = !this.showSearch; // Toggle search bar visibility
         },
-        getView(){
-            if(this.role == 3) return "/CustomerAccView"
-            else if(this.role == 2) return "/EmployeeAccView"
-            else if(this.role == 1) return "/LeadAccView"
-            else return "/LoginView"
+        getView() {
+            if (this.role == 3) return "/CustomerAccView";
+            else if (this.role == 2) return "/EmployeeAccView";
+            else if (this.role == 1) return "/LeadAccView";
+            else return "/LoginView";
         }
     }
 }
@@ -57,20 +56,19 @@ export default {
 
 <style scoped>
 .toolbar {
-    /* background-color: aqua; */
+    background-color: #43008b; 
+    color: #FFFFFF; 
     width: 100vw;
 }
-.icon {
-    background-color: red;
-    color: black;
-}
+
 .router-link-deco {
     text-decoration: none;
-    color: black;
+    color: #FFFFFF; 
 }
-.search-bar {
-    max-width: 300px; /* Adjust as needed */
-}
-;
 
+.search-bar {
+    max-width: 300px; 
+    background-color: #1E1E1E; 
+    color: #FFFFFF; 
+}
 </style>
