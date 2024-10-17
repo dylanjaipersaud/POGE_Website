@@ -9,6 +9,9 @@
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
+    <br>
+    <h2>All Games</h2>
+    <br>
 
     <v-row>
       <v-col v-for="game in activeGames" :key="game" cols="12" md="4">
@@ -23,10 +26,11 @@
       </v-col>
     </v-row>
 
-    <v-row align="start" style="height: 150px">
-      <v-col v-for="game in game_items" :key="game" cols="4">
-        <v-card @click="navigateToGameDetails(game)" style="cursor: pointer;">
-          <v-img class="bg-grey-lighten-2" :src="getImg(game.game)">
+    <v-row align="start" >
+      <v-col v-for="game in game_items" :key="game" cols="3">
+        <router-link :to="`/GameView/${game.game}`">
+        <v-card>
+          <v-img class="bg-grey-lighten-2" :src="getImg(game.game)" cover>
             <template v-slot:placeholder>
               <div class="d-flex align-center justify-center fill-height">
                 <v-progress-circular color="grey-4" indeterminate></v-progress-circular>
@@ -35,6 +39,7 @@
           </v-img>
           <v-card-title>{{ game.game }}</v-card-title>
         </v-card>
+      </router-link>
       </v-col>
     </v-row>
   </v-container>
@@ -84,11 +89,9 @@ export default {
       return this.game_items.filter(game => moment(game.release_date).isBefore(this.todayDate));
     },
 
-    navigateToGameDetails(gameId) {
-      console.log("Navigating to game:", gameId);
-      this.$router.push({ name: 'GameDetails', params: { id: gameId } });
-      console.log("Game items:", this.game_items);
-      console.log("Active games:", this.activeGames);
+    navigateToGameDetails(gameObj) {
+      console.log(gameObj.game)
+      this.$router.push({ name: 'GameView', state: { game: gameObj } });
     },
   },
 }

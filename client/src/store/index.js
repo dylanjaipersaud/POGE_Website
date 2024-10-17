@@ -10,6 +10,7 @@ const store = createStore({
     login_items: [],
     game_items: [],
     team_items: [],
+    update_items: [],
   },
 
   getters: {
@@ -20,6 +21,7 @@ const store = createStore({
     login_items: state => state.login_items,
     game_items: state => state.game_items,
     team_items: state => state.team_items,
+    update_items: state => state.update_items,
   },
 
   mutations: {
@@ -95,6 +97,18 @@ const store = createStore({
           })
     },
 
+    get_updates(state){
+      state.update_items = 
+      axios.get("http://localhost:3030/Updates/")
+          .then((res) => {
+            console.log(res);
+            this.state.update_items = res.data;
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+
     // put_employee(state, newData){
     //   axios.put("http://localhost:3030/Teams/", newData)
     //   .then((res) => {
@@ -139,6 +153,10 @@ const store = createStore({
 
     getTeams({ commit }) {
       commit('get_teams')
+    },
+
+    getUpdates({ commit }) {
+      commit('get_updates')
     },
 
   },

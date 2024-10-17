@@ -132,6 +132,68 @@ app.get("/Games", async (req, res) => {
     })
 })
 
+// Gets a single game
+app.get("/Games/:game", async (req, res) => {
+    const game = req.params.game
+    await dbConn.then((conn) => {
+        console.log("Getting Game where game = ", game)
+        conn.query(`SELECT * FROM Application WHERE game = ?`, [game], (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Games");
+            res.send(result)
+        })
+    })
+})
+
+// Gets all game updates
+app.get("/Updates", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Updates")
+        conn.query(`SELECT * FROM Updates`, (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Updates");
+            res.send(result)
+        })
+    })
+})
+
+// Gets all customer purchases
+app.get("/Purchases", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Purchases")
+        conn.query(`SELECT * FROM Purchase`, (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Purchases");
+            res.send(result)
+        })
+    })
+})
+
+// Gets a single customer's purchases
+app.get("/Purchases/:account", async (req, res) => {
+    const account_name = req.params.account
+    await dbConn.then((conn) => {
+        console.log("Getting Purchases where account =", account_name)
+        conn.query(`SELECT * FROM Purchase WHERE account = ?`, [account_name], (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Purchases");
+            res.send(result)
+        })
+    })
+})
+
+// Gets all Forum entries
+app.get("/Forums", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Forums")
+        conn.query(`SELECT * FROM Forum`, (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Forums");
+            res.send(result)
+        })
+    })
+})
+
 // Gets all Customers and Employee Logins (id, email)
 app.get("/LoginList", async (req, res) => {
     let holdLoginItems = [];

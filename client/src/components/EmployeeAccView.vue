@@ -121,7 +121,7 @@
         </v-row>
       </div>
       <br />
-      <!-- <h4>Teams</h4>
+      <h4>Development</h4>
       <v-expansion-panels
         v-model="selectedTeam"
         style="max-width: 50%"
@@ -129,14 +129,15 @@
         variant="inset"
       >
         <v-expansion-panel
-          v-for="team in team_items"
-          :key="team.team_name"
-          :title="team.team_name"
-          :value="team.team_name"
+          v-for="update in update_items"
+          :key="update.patch"
+          :title="update.game"
+          :value="update.team_name"
         >
           <v-expansion-panel-text>
-            <strong>Members</strong>
-            <v-row
+            <strong>{{ update.team_name }}</strong>
+            <p>{{ update.game }}</p>
+            <!-- <v-row
               v-for="emp in getEmployees(team.team_name)"
               :key="emp.id"
               align="center"
@@ -150,11 +151,11 @@
                 @click="reassignEmp(emp)"
                 >Re-Assign</v-btn
               >
-            </v-row>
+            </v-row> -->
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-card v-if="editTeam">
+      <!-- <v-card v-if="editTeam">
         <v-card-title
           >Re-assign {{ selectedEmp.first_name }}
           {{ selectedEmp.last_name }}</v-card-title
@@ -205,6 +206,9 @@ export default {
     employee_items() {
       return this.$store.getters.employee_items;
     },
+    update_items() {
+      return this.$store.getters.update_items;
+    },
     user() {
       return this.$store.state.user;
     },
@@ -220,6 +224,14 @@ export default {
       });
     this.$store
       .dispatch("getEmployees")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      this.$store
+      .dispatch("getUpdates")
       .then((res) => {
         console.log(res);
       })

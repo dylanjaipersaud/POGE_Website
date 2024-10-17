@@ -4,15 +4,15 @@ import HomeView from '../components/HomeView.vue';
 import EmployeeAccView from '../components/EmployeeAccView.vue';
 import LeadAccView from '../components/LeadAccView.vue';
 import CustomerAccView from '../components/CustomerAccView.vue';
-import GameDetails from '../components/gameDetails.vue'; 
+import GameView from '../components/GameView.vue'; 
 
 const routes = [
-  { path: '/', name: 'Home', component: HomeView },
-  { path: '/login', name: 'Login', component: LoginView },
-  { path: '/employee', name: 'Employee', component: EmployeeAccView },
-  { path: '/lead', name: 'Lead', component: LeadAccView },
-  { path: '/customer', name: 'Customer', component: CustomerAccView },
-  { path: '/game/:id', name: 'GameDetails', component: GameDetails, props: true }, 
+  { path: '/', name: HomeView, component: HomeView},
+  { path: '/LoginView', name: LoginView, component: LoginView },
+  { path: '/EmployeeAccView', name: EmployeeAccView, component: EmployeeAccView },
+  { path: '/LeadAccView', name: LeadAccView, component: LeadAccView },
+  { path: '/CustomerAccView', name: CustomerAccView, component: CustomerAccView },
+  { path: '/GameView/:name', name: 'GameView', component: GameView, props: true }, 
 ]
 
 
