@@ -46,16 +46,16 @@ app.get("/Customers/:id", async (req, res) => {
 // "email": "tylerd11@poge.com", "role": "Graphic Designer", "salary": 107000, "team_name": "Snowstorm" } 
 app.put("/Customers", async (req, res) => {
     await dbConn.then((conn) => {
-        const { id, first_name, last_name, phone, role, team_name } = req.query;
+        const { id, first_name, last_name, account_name } = req.query;
         console.log("Updating Customer ", id)
         console.log("Params: ", req.query)
         conn.query(`UPDATE Customer SET 
-            first_name = ?, last_name = ?, phone = ?, role = ?, team_name = ?
+            first_name = ?, last_name = ?, account_name = ?
             WHERE (id = ?)`,
-            [first_name, last_name, phone, role, team_name, id],
+            [first_name, last_name, account_name, id],
             (err, result) => {
                 if (err) console.log(err);
-                console.log("Updated Employee");
+                console.log("Updated Customer");
                 res.send(result)
             }
         )

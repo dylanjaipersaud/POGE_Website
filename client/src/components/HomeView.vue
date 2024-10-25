@@ -54,9 +54,9 @@ export default {
     todayDate: null,
     activeGames: [],
     top_games: [
-      { id: 1, game: "BunkerNite", image: gameImages[0].img, price: "$19.99", description: "A thrilling battle royale experience." },
-      { id: 2, game: "Squirrel Brawl", image: gameImages[5].img, price: "$14.99", description: "Battle squirrels in this fun brawler!" },
-      { id: 3, game: "Golf With Robots", image: gameImages[6].img, price: "$29.99", description: "Golf with your favorite robots." },
+      { id: 1, game: "BunkerNite", image: gameImages[0].img},
+      { id: 2, game: "Squirrel Brawl", image: gameImages[5].img},
+      { id: 3, game: "Golf With Robots", image: gameImages[6].img},
     ],
   }),
 

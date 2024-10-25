@@ -11,6 +11,8 @@ const store = createStore({
     game_items: [],
     team_items: [],
     update_items: [],
+    forum_items: [],
+    purchase_items: [],
   },
 
   getters: {
@@ -22,11 +24,12 @@ const store = createStore({
     game_items: state => state.game_items,
     team_items: state => state.team_items,
     update_items: state => state.update_items,
+    forum_items: state => state.forum_items,
+    purchase_items: state => state.purchase_items,
   },
 
   mutations: {
     update_user(state, newUser) {
-      
       localStorage.setItem('user', JSON.stringify(newUser))
       state.user = newUser;
       console.log("Updated user")
@@ -109,6 +112,30 @@ const store = createStore({
           })
     },
 
+    get_forums(state){
+      state.forum_items = 
+      axios.get("http://localhost:3030/Forums/")
+          .then((res) => {
+            console.log(res);
+            this.state.forum_items = res.data;
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+
+    get_purchases(state){
+      state.purchase_items = 
+      axios.get("http://localhost:3030/Purchases/")
+          .then((res) => {
+            console.log(res);
+            this.state.purchase_items = res.data;
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+
     // put_employee(state, newData){
     //   axios.put("http://localhost:3030/Teams/", newData)
     //   .then((res) => {
@@ -157,6 +184,14 @@ const store = createStore({
 
     getUpdates({ commit }) {
       commit('get_updates')
+    },
+
+    getForums({ commit }) {
+      commit('get_forums')
+    },
+
+    getPurchases({ commit }) {
+      commit('get_purchases')
     },
 
   },

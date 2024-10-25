@@ -99,7 +99,6 @@
         required
       >
       </v-text-field>
-      {{ newUserData }}
       <v-row class="btn-list" justify="space-evenly">
         <v-btn type="submit" @click="updateUser()">Update Information</v-btn>
         <!-- <v-btn>Cancel</v-btn> -->

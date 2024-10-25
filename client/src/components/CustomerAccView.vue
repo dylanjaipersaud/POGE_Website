@@ -5,11 +5,11 @@
       <h2>Welcome {{ user.first_name }}</h2>
       <v-spacer></v-spacer>
       <div>
-        <v-btn @click="editUser">Edit</v-btn>
-        <v-btn @click="logoutUser">Logout</v-btn>
+        <v-btn @click="editUser()">Edit</v-btn>
+        <v-btn @click="logoutUser()">Logout</v-btn>
       </div>
     </div>
-    <v-form ref="form" class="form-con" v-if="!editMode">
+    <v-form ref="form" class="form-con" v-if="editMode">
       <v-text-field
         class="form-opt"
         label="Email"
@@ -20,13 +20,12 @@
         clearable
         disabled
         v-model="newUserData.email"
-        required
       >
       </v-text-field>
 
       <v-text-field
         class="form-opt"
-        label="Account ID"
+        label="ID"
         prepend-icon="mdi-lock"
         hint="Edit your account ID"
         :rules="rules"
@@ -34,57 +33,83 @@
         clearable
         disabled
         v-model="newUserData.id"
-        required
       >
       </v-text-field>
 
       <v-text-field
         class="form-opt"
-        label="Account ID"
+        label="Account Name"
         prepend-icon="mdi-pencil"
-        hint="Edit your account name"
         :rules="rules"
-        persistent-hint
         clearable
+        disabled
         v-model="newUserData.account_name"
-        required
       >
       </v-text-field>
 
       <v-text-field
         class="form-opt"
-        label="Account ID"
+        label="First Name"
         prepend-icon="mdi-pencil"
         hint="Edit your first name"
         :rules="rules"
         persistent-hint
         clearable
         v-model="newUserData.first_name"
-        required
       >
       </v-text-field>
 
       <v-text-field
         class="form-opt"
-        label="Account ID"
+        label="Last Name"
         prepend-icon="mdi-pencil"
         hint="Edit your last name"
         :rules="rules"
         persistent-hint
         clearable
         v-model="newUserData.last_name"
-        required
       >
       </v-text-field>
 
-      <v-row justify="center">
-        <v-btn type="submit" class="update-btn" @click="handleUpdate"
+        <v-btn type="submit" class="update-btn" @click="handleUpdate()"
         >Update Information</v-btn
       >
-      <v-spacer></v-spacer>
-      <v-btn class="back-btn">Cancel</v-btn>
-      </v-row>
     </v-form>
+    <div v-if="!editMode">
+      <div class="form-con">
+        <v-row class="form-opt">
+          <strong>Email: </strong> &nbsp;
+          <p>{{ user.email }}</p>
+        </v-row>
+        <v-row class="form-opt">
+          <strong>ID: </strong> &nbsp;
+          <p>{{ user.id }}</p>
+        </v-row>
+        <v-row class="form-opt">
+          <strong>Account Name: </strong> &nbsp;
+          <p>{{ user.account_name }}</p>
+        </v-row>
+      </div>
+      <br>
+      <h4>Purchases</h4>
+      <v-expansion-panels
+        style="max-width: 50%"
+        class="my-4"
+        variant="inset"
+      >
+        <v-expansion-panel
+          v-for="purchase in getPurchases()"
+          :key="purchase.invoice"
+          :title="purchase.game"
+        >
+          <v-expansion-panel-text>
+            <strong>Details</strong>
+              <p>{{ purchase.game }} - {{ purchase.store }}</p>
+              <v-spacer></v-spacer>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
   </v-container>
 </template>
   
@@ -107,26 +132,68 @@ export default {
     user() {
       return this.$store.state.user;
     },
+    purchase_items(){
+      return this.$store.state.purchase_items;
+    }
   },
   mounted(){
     this.newUserData = this.user;
+    this.$store
+      .dispatch("getPurchases")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
   methods: {
-    handleUpdate() {
-      if (this.email && this.id) {
-        // Process the update here, e.g., API call
-        console.log(
-          "Updated Information - Email:",
-          this.email,
-          ", ID:",
-          this.id
-        );
-        alert("Information updated successfully!");
-      } else {
-        alert("Please fill in all fields.");
-      }
+    editUser() {
+      this.newUserData = {
+        id: this.user.id,
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        email: this.user.email,
+        account_name: this.user.account_name,
+      };
+      this.editMode = !this.editMode;
     },
-    editUser() {},
+
+    handleUpdate(){
+      axios
+        .put("http://localhost:3030/Customers", null, {
+          params: this.newUserData,
+        })
+        .then((res) => {
+          console.log(res);
+          this.$store.commit("update_user", this.newUserData);
+          // this.$store
+          //   .dispatch("getCustomers")
+          //   .then((res) => {
+          //     console.log(res);
+          //   })
+          //   .catch((err) => {
+          //     console.log(err);
+          //   });
+          // this.editMode = !this.editMode;
+        })
+        .catch((err) => {
+          console.log(err.toJSON());
+        });
+    },
+
+    getPurchases(){
+      let holdPurchases = [];
+      for (let i = 0; i < this.purchase_items.length; i++) {
+        if (
+          String(this.user.account_name).toLowerCase() ===
+          this.purchase_items[i].account.toLowerCase()
+        )
+          holdPurchases.push(this.purchase_items[i]);
+      }
+      return holdPurchases;
+    },
+
     logoutUser() {
       if (confirm("Would you like to logout?")) {
         this.$store.dispatch("logout").then(() => {
