@@ -1,19 +1,19 @@
 <template>
   <v-container>
-    <h1>{{ game }}</h1>
+    <h1>{{ game.game }}</h1>
     <!-- <v-img :src="getImg(game.game)" />
       <p><strong>Price:</strong> {{ game.price }}</p>
       <p><strong>Description:</strong> {{ game.description }}</p> -->
 
     <!-- Add to Cart Button -->
     <v-card class="game-card">
-      <v-img :src="getImg('BunkerNite')" height="500" width="500"></v-img>
+      <v-img :src="getImg(game.game)" height="500" width="500"></v-img>
       <v-col class="game-desc">
         <div>
-          <p>Data</p>
-          <p>Data</p>
-          <p>Data</p>
-          <p>Data</p>
+          <h3>${{ game.price }}</h3>
+          <br>
+          <p>Rated {{ game.maturity_rating }}</p>
+          <p><span>Released &nbsp; {{ formatDate(game.release_date) }}</span></p>
         </div>
         <v-btn class="purchase-btn" @click="addToCart">Add to Cart</v-btn>
       </v-col>
@@ -27,9 +27,16 @@
       <h2>Discussions</h2>
       <br />
       <v-row v-for="post in getForums()" :key="post.date">
-        <v-card>{{ post.description }}</v-card>
-        <br />
-        <br />
+        <v-card class="post-card">
+        <v-card-title>[{{ post.reason }}] &nbsp; {{ post.description }}</v-card-title>
+        <v-card-text class="post-card-text">
+          <v-row>
+            {{ post.account }} 
+          <v-spacer></v-spacer>
+          {{ formatDateTime(post.date) }}
+          </v-row>
+        </v-card-text>
+        </v-card>
       </v-row>
     </div>
   </v-container>
@@ -37,9 +44,10 @@
   
   <script>
 import gameImages from "../assets/covers/imageImport";
+import moment from 'moment';
 export default {
   data: () => ({
-    game: null,
+    game: {},
     comments: [],
   }),
 
@@ -54,11 +62,12 @@ export default {
     },
   },
 
-  mounted() {
-    this.$store.dispatch("getGames");
+  async mounted() {
+    await this.$store.dispatch("getGames");
     this.$store.dispatch("getForums");
-    this.game = "Cola El Machbros";
+    // this.game = "Cola El Machbros";
     // this.getGame(this.$route.params.name);
+    this.game = this.getGame(this.$route.params.name);
     // this.gameObj = this.getGame()
     // .then(() => {
 
@@ -68,7 +77,8 @@ export default {
 
   async beforeRouteUpdate(to) {
     // react to route changes...
-    this.game = await this.getGame(to.params.id);
+    console.log("name: ", this.$route.params.name)
+    this.game = await this.getGame(to.params.name);
   },
 
   methods: {
@@ -84,13 +94,20 @@ export default {
       }
       return null;
     },
+
+    formatDate(date){
+      return moment(date).format("MM[/]DD[/]YYYY")
+    },
+    formatDateTime(dateTime){
+      return moment(dateTime).format("MM[/]DD[/]YYYY[ ]hh:mma")
+    },
     addToCart() {},
     postComment() {},
     getForums() {
       let holdPosts = [];
       for (let i = 0; i < this.forum_items.length; i++) {
         if (
-          String(this.game).toLowerCase() ===
+          String(this.game.game).toLowerCase() ===
           this.forum_items[i].game.toLowerCase()
         )
           holdPosts.push(this.forum_items[i]);
@@ -110,13 +127,21 @@ export default {
 }
 .game-desc {
   justify-content: space-between;
-  padding: 8%;
+  padding: 5%;
   display: flex;
   flex-direction: column;
 }
 .purchase-btn{
   background-color: white;
   color: black;
+}
+.post-card{
+  width: 50%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.post-card-text{
+  margin-left: 10px;
 }
 </style>
   

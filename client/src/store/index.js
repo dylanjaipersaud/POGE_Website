@@ -76,16 +76,8 @@ const store = createStore({
           })
     },
 
-    get_games(state) {
-      state.game_items =
-        axios.get("http://localhost:3030/Games/")
-          .then((res) => {
-            console.log(res);
-            this.state.game_items = res.data;
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+    set_games(state, games) {
+      state.game_items = games
     },
 
     get_teams(state){
@@ -175,7 +167,15 @@ const store = createStore({
     },
 
     getGames({ commit }) {
-      commit('get_games')
+      return axios.get("http://localhost:3030/Games/")
+      .then((res) => {
+        console.log(res);
+        commit('set_games', res.data)
+      })
+      .catch((err) => {
+        console.err(err)
+      })
+      
     },
 
     getTeams({ commit }) {

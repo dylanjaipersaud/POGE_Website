@@ -20,6 +20,9 @@
             <v-icon icon="mdi-magnify" v-if="!showSearch"></v-icon>
             <v-icon icon="mdi-cancel" v-else></v-icon>
         </v-btn>
+        <v-btn @click="overlay = !overlay">
+            <v-icon icon="mdi-cancel"></v-icon>
+        </v-btn>
         <router-link v-if="role == 0" to="/LoginView" class="router-link-deco">
             <v-btn>Login</v-btn>
         </router-link>
@@ -27,13 +30,19 @@
             <v-btn><v-icon icon="mdi-account-box-outline"></v-icon></v-btn>
         </router-link>
     </v-toolbar>
+    <v-overlay v-model="overlay" transition="slide-x-reverse-transition">
+        <v-card class="cart-card" >
+            <v-card-title>Hello</v-card-title>
+        </v-card>
+    </v-overlay>
 </template>
 
 <script>
 export default {
     data: () => ({
         search: '',
-        showSearch: false
+        showSearch: false,
+        overlay: false
     }),
     computed: {
         role() {
@@ -70,5 +79,12 @@ export default {
     max-width: 300px; 
     background-color: #1E1E1E; 
     color: #FFFFFF; 
+}
+.cart-card{
+    position: absolute;
+    height: 100vh;
+    width: 400px;
+    /* top: 10; */
+    left: 0;
 }
 </style>

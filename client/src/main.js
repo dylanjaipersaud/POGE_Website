@@ -11,13 +11,14 @@ import router from './router';
 import store from './store/index';
 import './file.css'; // Import the global styles
 
-createApp(App).use(store).use(router).mount('#app');
+// createApp(App).use(store).use(router).mount('#app');
 
 // Define your custom dark blue theme
 const CustomDarkBlueTheme = {
   dark: true, // Enable dark mode
   colors: {
-    background: '#121212', // Dark background
+    background: '#1A041B',
+    'background-color': '#1A041B', // Dark background
     surface: '#1E1E1E', // Slightly lighter surface
     primary: '#1976D2', // Dark blue primary color
     'primary-darken-1': '#0D47A1', // Darker shade of primary
@@ -41,9 +42,9 @@ const vuetify = createVuetify({
     },
   },
   theme: {
-    defaultTheme: 'CustomDarkBlueTheme', // Set your custom theme as default
+    defaultTheme: 'CustomDarkBlueTheme', 
     themes: {
-      CustomDarkBlueTheme,
+      CustomDarkBlueTheme
     },
   },
 });

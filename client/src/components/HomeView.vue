@@ -14,21 +14,8 @@
     <br>
 
     <v-row>
-      <v-col v-for="game in activeGames" :key="game" cols="12" md="4">
-        <router-link :to="{ name: 'GameDetails', params: { id: game.id } }" style="text-decoration: none;">
-          <v-card class="d-flex align-center" height="200px" dark>
-            <div class="text-h3 flex-grow-1 text-center">
-              {{ game.game }}
-            </div>
-            <v-btn color="primary">View Details</v-btn>
-          </v-card>
-        </router-link>
-      </v-col>
-    </v-row>
-
-    <v-row align="start" >
-      <v-col v-for="game in game_items" :key="game" cols="3">
-        <router-link :to="`/GameView/${game.game}`">
+      <v-col v-for="game in isActive()" :key="game" cols="3">
+        <router-link class="game-link" :to="`/GameView/${game.game}`">
         <v-card>
           <v-img class="bg-grey-lighten-2" :src="getImg(game.game)" cover>
             <template v-slot:placeholder>
@@ -52,7 +39,7 @@ import gameImages from "../assets/covers/imageImport";
 export default {
   data: () => ({
     todayDate: null,
-    activeGames: [],
+    // activeGames: [],
     top_games: [
       { id: 1, game: "BunkerNite", image: gameImages[0].img},
       { id: 2, game: "Squirrel Brawl", image: gameImages[5].img},
@@ -66,19 +53,17 @@ export default {
     },
   },
 
-  mounted() {
-    this.$store.dispatch("getGames")
-      .then(() => {
-        this.activeGames = this.isActive();
-        console.log(this.activeGames); 
-      })
-      .catch(console.log);
+   async mounted() {
+    await this.$store.dispatch("getGames");
+    // this.activeGames = this.$store.getters.game_items;
+    console.log("Active games", this.$store.getters.game_items)
     this.setToday();
   },
 
   methods: {
     setToday() {
       this.todayDate = moment();
+      console.log(this.todayDate)
     },
 
     getImg(name) {
@@ -86,7 +71,12 @@ export default {
     },
 
     isActive() {
-      return this.game_items.filter(game => moment(game.release_date).isBefore(this.todayDate));
+      let holdArr =[];
+      for(let i = 0; i < this.game_items.length; i++){
+        if(moment(this.game_items[i].release_date).isBefore(this.todayDate))
+          holdArr.push(this.game_items[i])
+      }
+      return holdArr;
     },
 
     navigateToGameDetails(gameObj) {
@@ -110,5 +100,8 @@ export default {
   max-width: 100%; 
   height: auto;
   margin-bottom: 1rem; 
+}
+.game-link{
+  text-decoration: none;
 }
 </style>

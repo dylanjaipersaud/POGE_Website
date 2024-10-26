@@ -114,6 +114,7 @@
 </template>
   
   <script>
+  import axios from 'axios';
 export default {
   data: () => ({
     editMode: false,
@@ -153,7 +154,6 @@ export default {
         id: this.user.id,
         first_name: this.user.first_name,
         last_name: this.user.last_name,
-        email: this.user.email,
         account_name: this.user.account_name,
       };
       this.editMode = !this.editMode;
@@ -167,15 +167,15 @@ export default {
         .then((res) => {
           console.log(res);
           this.$store.commit("update_user", this.newUserData);
-          // this.$store
-          //   .dispatch("getCustomers")
-          //   .then((res) => {
-          //     console.log(res);
-          //   })
-          //   .catch((err) => {
-          //     console.log(err);
-          //   });
-          // this.editMode = !this.editMode;
+          this.$store
+            .dispatch("getCustomers")
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          this.editMode = !this.editMode;
         })
         .catch((err) => {
           console.log(err.toJSON());
