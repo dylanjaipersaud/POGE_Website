@@ -207,6 +207,36 @@ app.get("/Purchases/:account", async (req, res) => {
     })
 })
 
+// {
+//     "invoice": 158873,
+//     "account": "sandyaid",
+//     "store": "Steam Deck",
+//     "game": "Dims4",
+//     "date": "2005-11-18T14:10:00.000Z",
+//     "payment_method": "Gift Card",
+//     "type": "Purchase"
+//   },
+
+// Post a purchase
+app.post("/Purchases", async (req, res) => {
+    const invoice = Math.floor(Math.random() * (999999 - 111111) + 111111);
+    console.log("Invoice: ", invoice);
+    console.log(req);
+    const {account, store, game, date, payment_method, type} = req.query
+    await dbConn.then((conn) => {
+        console.log("Posting Purchases where details =", req.query)
+        conn.query(`INSERT INTO Purchase 
+            (invoice, account, store, game, date, payment_method, type) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?)`,
+            [invoice, account, store, game, date, payment_method, type], (err, result) => {
+                if (err) console.log(err);
+                console.log("Posted Purchase", result);
+                res.send(result)
+            })
+    })
+})
+
 // Gets all Forum entries
 app.get("/Forums", async (req, res) => {
     await dbConn.then((conn) => {

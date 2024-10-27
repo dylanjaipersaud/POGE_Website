@@ -159,8 +159,15 @@ export default {
       this.editMode = !this.editMode;
     },
 
+    checkDetails(){
+      if(this.newUserData.first_name.length > 0 && this.newUserData.last_name.length > 0)
+        return true;
+      return false
+    },
+
     handleUpdate(){
-      axios
+      if(this.checkDetails){
+        axios
         .put("http://localhost:3030/Customers", null, {
           params: this.newUserData,
         })
@@ -176,10 +183,14 @@ export default {
               console.log(err);
             });
           this.editMode = !this.editMode;
+          return true;
         })
         .catch((err) => {
+          alert("An error has occurred")
           console.log(err.toJSON());
         });
+      }
+      return false
     },
 
     getPurchases(){

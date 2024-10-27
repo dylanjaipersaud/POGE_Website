@@ -32,7 +32,7 @@ const store = createStore({
   state: {
     role: localStorage.getItem('role') || 0,
     user: JSON.parse(localStorage.getItem('user')) || {}, 
-    cart_items: [],
+    cart_items: JSON.parse(localStorage.getItem('cart')) || [],
     customer_items: [],
     employee_items: [],
     login_items: [],
@@ -84,6 +84,11 @@ const store = createStore({
           state.cart_items.splice(i)
       }
       localStorage.setItem('cart', JSON.stringify(state.cart_items))
+    },
+
+    clear_cart(state){
+      state.cart_items = [];
+      localStorage.removeItem('cart')
     },
 
     get_customers(state) {
@@ -210,6 +215,10 @@ const store = createStore({
 
     removeCart({ commit }, item){
       commit('remove_cart', item)
+    },
+
+    clearCart({ commit }){
+      commit('clear_cart')
     },
 
     getCustomers({ commit }) {
