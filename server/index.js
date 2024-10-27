@@ -145,6 +145,31 @@ app.get("/Games/:game", async (req, res) => {
     })
 })
 
+// Gets all Platforms for Applications
+app.get("/PlatformApps", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Games")
+        conn.query(`SELECT * FROM PlatformApp`, (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Games");
+            res.send(result)
+        })
+    })
+})
+
+// Gets all Platforms for a game
+app.get("/PlatformApps/:game", async (req, res) => {
+    const game = req.params.game
+    await dbConn.then((conn) => {
+        console.log("Getting Platforms where game = ", game)
+        conn.query(`SELECT * FROM PlatformApp WHERE game = ?`, [game], (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Platforms where game = ", game);
+            res.send(result)
+        })
+    })
+})
+
 // Gets all game updates
 app.get("/Updates", async (req, res) => {
     await dbConn.then((conn) => {

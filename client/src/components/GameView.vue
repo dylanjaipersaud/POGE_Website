@@ -10,12 +10,17 @@
       <v-img :src="getImg(game.game)" height="500" width="500"></v-img>
       <v-col class="game-desc">
         <div>
-          <h3>${{ game.price }}</h3>
-          <br>
+          <h3 v-if="game.price > 0">${{ game.price }}</h3>
+          <h3 v-else>Free</h3>
+          <br />
           <p>Rated {{ game.maturity_rating }}</p>
-          <p><span>Released &nbsp; {{ formatDate(game.release_date) }}</span></p>
+          <p>
+            <span>Released &nbsp; {{ formatDate(game.release_date) }}</span>
+          </p>
+          <br>
+          <v-select label="Select" hint="Select a Platform" persistent-hint v-model="platform" :items="platform_options"></v-select>
         </div>
-        <v-btn class="purchase-btn" @click="addToCart">Add to Cart</v-btn>
+        <v-btn class="purchase-btn" @click="addToCart(game)">Add to Cart</v-btn>
       </v-col>
     </v-card>
 
@@ -28,14 +33,16 @@
       <br />
       <v-row v-for="post in getForums()" :key="post.date">
         <v-card class="post-card">
-        <v-card-title>[{{ post.reason }}] &nbsp; {{ post.description }}</v-card-title>
-        <v-card-text class="post-card-text">
-          <v-row>
-            {{ post.account }} 
-          <v-spacer></v-spacer>
-          {{ formatDateTime(post.date) }}
-          </v-row>
-        </v-card-text>
+          <v-card-title
+            >[{{ post.reason }}] &nbsp; {{ post.description }}</v-card-title
+          >
+          <v-card-text class="post-card-text">
+            <v-row>
+              {{ post.account }}
+              <v-spacer></v-spacer>
+              {{ formatDateTime(post.date) }}
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-row>
     </div>
@@ -44,11 +51,15 @@
   
   <script>
 import gameImages from "../assets/covers/imageImport";
-import moment from 'moment';
+import moment from "moment";
+import axios from "axios";
+
 export default {
   data: () => ({
     game: {},
     comments: [],
+    platform: null,
+    platform_options: ["Playstation", "Steam"],
   }),
 
   // props: (route) => ({ game: route.query.q }),
@@ -60,6 +71,9 @@ export default {
     forum_items() {
       return this.$store.getters.forum_items;
     },
+    cart_items() {
+      return this.$store.getters.cart_items;
+    },
   },
 
   async mounted() {
@@ -68,17 +82,12 @@ export default {
     // this.game = "Cola El Machbros";
     // this.getGame(this.$route.params.name);
     this.game = this.getGame(this.$route.params.name);
+    console.log("cart items: ", this.cart_items);
     // this.gameObj = this.getGame()
     // .then(() => {
 
     // })
     // .catch(err){ console.log(err)};
-  },
-
-  async beforeRouteUpdate(to) {
-    // react to route changes...
-    console.log("name: ", this.$route.params.name)
-    this.game = await this.getGame(to.params.name);
   },
 
   methods: {
@@ -95,13 +104,34 @@ export default {
       return null;
     },
 
-    formatDate(date){
-      return moment(date).format("MM[/]DD[/]YYYY")
+    formatDate(date) {
+      return moment(date).format("MMMM[ ]D[, ]YYYY");
     },
-    formatDateTime(dateTime){
-      return moment(dateTime).format("MM[/]DD[/]YYYY[ ]hh:mma")
+    formatDateTime(dateTime) {
+      return moment(dateTime).format("MM[/]DD[/]YYYY[ ]hh:mma");
     },
-    addToCart() {},
+
+    getPlatforms() {
+      axios
+        .get("http://localhost:3030/PlatformApps/" + this.game.game)
+        .then((res) => {
+          console.log(res);
+          this.platform_options = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    addToCart(gameObj) {
+      for (let i = 0; i < this.cart_items.length; i++) {
+        if (this.cart_items[i].game === gameObj.game) {
+          alert(gameObj.game + " is already in your cart");
+          return;
+        }
+      }
+      this.$store.dispatch("addCart", gameObj);
+    },
     postComment() {},
     getForums() {
       let holdPosts = [];
@@ -124,6 +154,7 @@ export default {
   justify-content: center;
   padding-left: 5%;
   padding-right: 5%;
+  text-wrap: nowrap;
 }
 .game-desc {
   justify-content: space-between;
@@ -131,16 +162,16 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.purchase-btn{
+.purchase-btn {
   background-color: white;
   color: black;
 }
-.post-card{
+.post-card {
   width: 50%;
   padding: 10px;
   margin-bottom: 10px;
 }
-.post-card-text{
+.post-card-text {
   margin-left: 10px;
 }
 </style>
