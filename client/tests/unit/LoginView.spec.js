@@ -8,7 +8,7 @@ import LoginView from '@/components/LoginView.vue';
 import EmployeeAccView from '@/components/EmployeeAccView.vue';
 import LeadAccView from '@/components/LeadAccView.vue';
 import CustomerAccView from '@/components/CustomerAccView.vue';
-// import router from '@/router'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 const vuetify = createVuetify({
@@ -21,7 +21,7 @@ const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes: [
         // { path: '/', component: App },
-        { path: '/LoginView', name: LoginView, component: LoginView },
+        { path: '/', name: LoginView, component: LoginView },
         { path: '/EmployeeAccView', name: EmployeeAccView, component: EmployeeAccView },
         { path: '/LeadAccView', name: LeadAccView, component: LeadAccView },
         { path: '/CustomerAccView', name: CustomerAccView, component: CustomerAccView },
@@ -31,9 +31,7 @@ const router = createRouter({
 describe('LoginComponent.vue', () => {
     let store;
 
-    /*
-    *   Initializing test suite
-    */
+    
     beforeEach(() => {
         store = createStore({
             state: {
@@ -138,19 +136,17 @@ describe('LoginComponent.vue', () => {
         expect(store.state.role).toBe(1);
         expect(store.state.user.email).toBe('mjersey@poge.com');
     });
-
     it('should authenticate goodneighbor as employee (role = 2)', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
-
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
+    
         wrapper.setData({ email: 'goodneighbor@poge.com', id: 1092 });
         wrapper.vm.accountLookUp();
-
+    
         expect(store.state.role).toBe(2);
         expect(store.state.user.email).toBe('goodneighbor@poge.com');
     });
-
     it('should authenticate reshmac001 as customer (role = 3)', () => {
-        const wrapper = mount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = mount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
         wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
         wrapper.vm.accountLookUp();
@@ -160,7 +156,7 @@ describe('LoginComponent.vue', () => {
     });
 
     it('should set invalidAuth to true on failed authentication', () => {
-        const wrapper = mount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = mount(LoginView, { global: { plugins: [store, vuetify, router]  } });
 
         wrapper.setData({ email: 'invalid@poge.com', id: 123456 });
         wrapper.vm.accountLookUp();
@@ -173,7 +169,7 @@ describe('LoginComponent.vue', () => {
     *   Testing getUserRole function
     */
     it('should set role to 3 for a customer', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
         wrapper.setData({ email: 'reshmac001@gmail.com', id: 7007847 });
         wrapper.vm.getUserRole();
@@ -183,7 +179,7 @@ describe('LoginComponent.vue', () => {
     });
 
     it('should set role to 2 for a regular employee', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
         wrapper.setData({ email: 'goodneighbor@poge.com', id: 1092 });
         wrapper.vm.getUserRole();
@@ -193,7 +189,7 @@ describe('LoginComponent.vue', () => {
     });
 
     it('should set role to 1 for a tech lead', () => {
-        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify] } });
+        const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
         wrapper.setData({ email: 'mjersey@poge.com', id: 8422 });
         wrapper.vm.getUserRole();

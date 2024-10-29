@@ -14,20 +14,22 @@
     <br>
 
     <v-row>
-      <v-col v-for="game in isActive()" :key="game" cols="3">
-        <router-link class="game-link" :to="`/GameView/${game.game}`">
-        <v-card>
-          <v-img class="bg-grey-lighten-2" :src="getImg(game.game)" cover>
-            <template v-slot:placeholder>
-              <div class="d-flex align-center justify-center fill-height">
-                <v-progress-circular color="grey-4" indeterminate></v-progress-circular>
-              </div>
-            </template>
-          </v-img>
-          <v-card-title>{{ game.game }}</v-card-title>
-        </v-card>
-      </router-link>
-      </v-col>
+      <v-col v-for="game in isActive()" :key="game" cols="4">
+  <router-link class="game-link" :to="`/GameView/${game.game}`">
+    <v-card>
+      <v-img class="bg-grey-lighten-2 game-image" :src="getImg(game.game)">
+
+        <template v-slot:placeholder>
+          <div class="d-flex align-center justify-center fill-height">
+            <v-progress-circular color="grey-4" indeterminate></v-progress-circular>
+          </div>
+        </template>
+      </v-img>
+      <v-card-title>{{ game.game }}</v-card-title>
+    </v-card>
+  </router-link>
+</v-col>
+
     </v-row>
   </v-container>
 </template>
@@ -95,12 +97,22 @@ export default {
 .transparent-sheet {
   background-color: transparent; 
 }
-
-.game-image {
-  max-width: 100%; 
+.v-card .game-image {
+  width: auto;  
   height: auto;
   margin-bottom: 1rem; 
-}
+  transition: transform 0.3s ease; }
+
+.v-card .game-image:hover {
+  transform: scale(1.1); }
+.v-card-title {
+  transition: transform 0.3s ease;   font-size: 1rem; }
+
+.v-card:hover .v-card-title {
+  transform: scale(1.1); }
+
+
+
 .game-link{
   text-decoration: none;
 }

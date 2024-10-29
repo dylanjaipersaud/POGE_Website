@@ -242,7 +242,7 @@ export default {
 
     handleUpdate() {
       if (this.email && this.id) {
-        // Process the update here, e.g., API call
+        
         console.log(
           "Updated Information - Email:",
           this.email,

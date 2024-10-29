@@ -100,6 +100,7 @@ export default {
       return this.$store.state.user;
     },
   },
+  
   mounted() {
     this.$store
       .dispatch("getLogins")
@@ -225,7 +226,7 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  /* background-color: red; */
+
   padding-top: 10%;
   height: 50vh;
   justify-content: space-evenly;

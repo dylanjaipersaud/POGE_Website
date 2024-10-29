@@ -164,34 +164,23 @@ export default {
         return true;
       return false
     },
+    async handleUpdate() {
+  if (this.checkDetails) {
+    try {
+      const res = await axios.put("http://localhost:3030/Customers", null, {
+        params: this.newUserData,
+      });
+      console.log(res);
+      
+             this.$store.commit("update_user", this.newUserData);
 
-    handleUpdate(){
-      if(this.checkDetails){
-        axios
-        .put("http://localhost:3030/Customers", null, {
-          params: this.newUserData,
-        })
-        .then((res) => {
-          console.log(res);
-          this.$store.commit("update_user", this.newUserData);
-          this.$store
-            .dispatch("getCustomers")
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          this.editMode = !this.editMode;
-          return true;
-        })
-        .catch((err) => {
-          alert("An error has occurred")
-          console.log(err.toJSON());
-        });
-      }
-      return false
-    },
+             await this.$store.dispatch("getCustomers");
+      
+      this.editMode = !this.editMode;        return true;      } catch (err) {
+      alert("An error has occurred");        console.log(err);        return false;      }
+  }
+  return false;  },
+
 
     getPurchases(){
       let holdPurchases = [];
@@ -204,13 +193,20 @@ export default {
       }
       return holdPurchases;
     },
-
-    logoutUser() {
-      if (confirm("Would you like to logout?")) {
-        this.$store.dispatch("logout").then(() => {
-          this.$router.push("/LoginView");
-        });
-      }
+    async logoutUser() {
+  console.log("Logout initiated");
+  if (confirm("Would you like to logout?")) {
+    console.log("User confirmed logout");
+    try {
+      await this.$store.dispatch("logout");
+      console.log("Dispatch successful, redirecting");
+      this.$router.push("/LoginView");
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  } else {
+    console.log("User cancelled logout");
+  }
     },
   },
 };
