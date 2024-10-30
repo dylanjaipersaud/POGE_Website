@@ -60,16 +60,16 @@
 export default {
   data: () => ({
     // Customer login test
-    email: "mako1902@ymail.com",
-    id: 6590559,
+    // email: "mako1902@ymail.com",
+    // id: 6590559,
 
     // Employee login test
     // email: "joshypoo@poge.com",
     // id: 8375,
 
     // Tech Lead login test
-    // email: "gamermaster@poge.com",
-    // id: 8829,
+    email: "gamermaster@poge.com",
+    id: 8829,
 
     rules: [
       (value) => {

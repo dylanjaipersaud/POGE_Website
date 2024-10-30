@@ -71,7 +71,7 @@
       >
       </v-text-field>
 
-        <v-btn type="submit" class="update-btn" @click="handleUpdate()"
+      <v-btn type="submit" class="update-btn" @click="handleUpdate()"
         >Update Information</v-btn
       >
     </v-form>
@@ -90,22 +90,21 @@
           <p>{{ user.account_name }}</p>
         </v-row>
       </div>
-      <br>
+      <br />
       <h4>Purchases</h4>
-      <v-expansion-panels
-        style="max-width: 50%"
-        class="my-4"
-        variant="inset"
-      >
+      <v-expansion-panels style="max-width: 50%" class="my-4" variant="inset">
         <v-expansion-panel
           v-for="purchase in getPurchases()"
           :key="purchase.invoice"
-          :title="purchase.game"
+          :title="purchase.game + ' (' + purchase.store + ')'"
         >
           <v-expansion-panel-text>
             <strong>Details</strong>
-              <p>{{ purchase.game }} - {{ purchase.store }}</p>
-              <v-spacer></v-spacer>
+            <p>Invoice No: {{ purchase.invoice }}</p>
+            <p>Platform: {{ purchase.store }}</p>
+            <p>Date Purchased: {{ formatDate(purchase.date) }}</p>
+            <p>Payment Method: {{ purchase.payment_method }}</p>
+            <v-spacer></v-spacer>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -114,7 +113,8 @@
 </template>
   
   <script>
-  import axios from 'axios';
+import axios from "axios";
+import moment from "moment";
 export default {
   data: () => ({
     editMode: false,
@@ -123,7 +123,7 @@ export default {
       id: 0,
       account_name: "",
       first_name: "",
-      last_name: ""
+      last_name: "",
     },
     email: null,
     id: null,
@@ -133,11 +133,11 @@ export default {
     user() {
       return this.$store.state.user;
     },
-    purchase_items(){
+    purchase_items() {
       return this.$store.state.purchase_items;
-    }
+    },
   },
-  mounted(){
+  mounted() {
     this.newUserData = this.user;
     this.$store
       .dispatch("getPurchases")
@@ -149,6 +149,10 @@ export default {
       });
   },
   methods: {
+    formatDate(date) {
+      return moment(date).format("MM[/]DD[/]YYYY[ ]h[:]MMa");
+    },
+
     editUser() {
       this.newUserData = {
         id: this.user.id,
@@ -159,30 +163,44 @@ export default {
       this.editMode = !this.editMode;
     },
 
-    checkDetails(){
-      if(this.newUserData.first_name.length > 0 && this.newUserData.last_name.length > 0)
+    checkDetails() {
+      if (
+        this.newUserData.first_name.length > 0 &&
+        this.newUserData.last_name.length > 0
+      )
         return true;
-      return false
+      return false;
     },
+
     async handleUpdate() {
-  if (this.checkDetails) {
-    try {
-      const res = await axios.put("http://localhost:3030/Customers", null, {
-        params: this.newUserData,
-      });
-      console.log(res);
-      
-             this.$store.commit("update_user", this.newUserData);
+      if (this.checkDetails) {
+        await axios
+          .put("http://localhost:3030/Customers", null, {
+            params: this.newUserData,
+          })
+          .then((res) => {
+            console.log(res);
+            this.$store.commit("update_user", this.newUserData);
+            this.$store
+              .dispatch("getCustomers")
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            this.editMode = !this.editMode;
+            return true;
+          })
+          .catch((err) => {
+            alert("An error has occurred");
+            console.log(err);
+          });
+      }
+      return false;
+    },
 
-             await this.$store.dispatch("getCustomers");
-      
-      this.editMode = !this.editMode;        return true;      } catch (err) {
-      alert("An error has occurred");        console.log(err);        return false;      }
-  }
-  return false;  },
-
-
-    getPurchases(){
+    getPurchases() {
       let holdPurchases = [];
       for (let i = 0; i < this.purchase_items.length; i++) {
         if (
@@ -193,20 +211,23 @@ export default {
       }
       return holdPurchases;
     },
+    
     async logoutUser() {
-  console.log("Logout initiated");
-  if (confirm("Would you like to logout?")) {
-    console.log("User confirmed logout");
-    try {
-      await this.$store.dispatch("logout");
-      console.log("Dispatch successful, redirecting");
-      this.$router.push("/LoginView");
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  } else {
-    console.log("User cancelled logout");
-  }
+      console.log("Logout initiated");
+      if (confirm("Would you like to logout?")) {
+        console.log("User confirmed logout");
+        try {
+          await this.$store.dispatch("logout").then(() => {
+            this.$store.dispatch("clearCart");
+          });
+          console.log("Dispatch successful, redirecting");
+          this.$router.push("/LoginView");
+        } catch (error) {
+          console.error("Logout failed:", error);
+        }
+      } else {
+        console.log("User cancelled logout");
+      }
     },
   },
 };

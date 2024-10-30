@@ -133,13 +133,27 @@ app.get("/Games", async (req, res) => {
 })
 
 // Gets a single game
+app.put("/Games", async (req, res) => {
+    // const game = req.params.game
+    const { game, release_date } = req.query;
+    await dbConn.then((conn) => {
+        console.log("Getting Game where game = ", game)
+        conn.query(`UPDATE Application SET release_date = ? WHERE game = ?`, [release_date, game], (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Games");
+            res.send(result)
+        })
+    })
+})
+
+// Updates a game's release date
 app.get("/Games/:game", async (req, res) => {
     const game = req.params.game
     await dbConn.then((conn) => {
-        console.log("Getting Game where game = ", game)
+        console.log("Updating Game where game = ", game)
         conn.query(`SELECT * FROM Application WHERE game = ?`, [game], (err, result) => {
             if (err) console.log(err);
-            console.log("Got Games");
+            console.log("Updated Game");
             res.send(result)
         })
     })
@@ -182,6 +196,44 @@ app.get("/Updates", async (req, res) => {
     })
 })
 
+//Post a single update
+app.post("/Updates", async (req, res) => {
+    const { patch, game, team_name, reason, status } = req.query
+    const release_date = "2008-11-11 13:23:44"
+    const storage = "1GB"
+
+    // Posting to Content due to FK
+    await dbConn.then((conn) => {
+        console.log("Posting Content")
+        conn.query(`INSERT INTO Content
+            (patch, game, release_date, storage)
+            VALUES (?, ?, ?, ?)`,
+            [patch, game, release_date, storage], (err, result) => {
+                if (err) console.log(err);
+                console.log("Posted Content");
+
+            })
+    })
+        .catch(err =>
+            console.log("An error ocurred", err)
+        )
+
+    await dbConn.then((conn) => {
+        console.log("Posting Updates where data = ", req.query)
+        conn.query(`INSERT INTO Updates
+            (patch, game, team_name, reason, status)
+            VALUES (?, ?, ?, ?, ?)`,
+            [patch, game, team_name, reason, status], (err, result) => {
+                if (err) console.log(err);
+                console.log("Posted Updates");
+                res.send(result)
+            })
+    })
+        .catch(err =>
+            console.log("An error ocurred", err)
+        )
+})
+
 // Gets all customer purchases
 app.get("/Purchases", async (req, res) => {
     await dbConn.then((conn) => {
@@ -221,8 +273,8 @@ app.get("/Purchases/:account", async (req, res) => {
 app.post("/Purchases", async (req, res) => {
     const invoice = Math.floor(Math.random() * (999999 - 111111) + 111111);
     console.log("Invoice: ", invoice);
-    console.log(req);
-    const {account, store, game, date, payment_method, type} = req.query
+    // console.log(req);
+    const { account, store, game, date, payment_method, type } = req.query
     await dbConn.then((conn) => {
         console.log("Posting Purchases where details =", req.query)
         conn.query(`INSERT INTO Purchase 
@@ -231,7 +283,7 @@ app.post("/Purchases", async (req, res) => {
             (?, ?, ?, ?, ?, ?, ?)`,
             [invoice, account, store, game, date, payment_method, type], (err, result) => {
                 if (err) console.log(err);
-                console.log("Posted Purchase", result);
+                else console.log("Posted Purchase", result);
                 res.send(result)
             })
     })
@@ -244,6 +296,52 @@ app.get("/Forums", async (req, res) => {
         conn.query(`SELECT * FROM Forum`, (err, result) => {
             if (err) console.log(err);
             console.log("Got Forums");
+            res.send(result)
+        })
+    })
+})
+
+// Post a forum post
+app.post("/Forums", async (req, res) => {
+    // console.log(req);
+    const { game, account, date, reason, description } = req.query
+    await dbConn.then((conn) => {
+        console.log("Posting Forum where details =", req.query)
+        conn.query(`INSERT INTO Forum 
+            (game, account, date, reason, description) 
+            VALUES 
+            (?, ?, ?, ?, ?)`,
+            [game, account, date, reason, description], (err, result) => {
+                if (err) console.log(err);
+                else console.log("Posted Forum", result);
+                res.send(result)
+            })
+    })
+})
+
+// Deletes a single post from Forums
+app.delete("/Forums", async (req, res) => {
+    console.log(req);
+    const { game, account, description } = req.body
+    await dbConn.then((conn) => {
+        console.log("Deleting Forum where details =", req.body)
+        conn.query(`DELETE FROM Forum 
+            WHERE game = ? AND account = ? AND description = ?`,
+            [game, account, description], (err, result) => {
+                if (err) console.log(err);
+                else console.log("Deleted Forum", result);
+                res.send(result)
+            })
+    })
+})
+
+// Gets all from Development
+app.get("/Developments", async (req, res) => {
+    await dbConn.then((conn) => {
+        console.log("Getting Development")
+        conn.query(`SELECT * FROM Development`, (err, result) => {
+            if (err) console.log(err);
+            console.log("Got Development");
             res.send(result)
         })
     })

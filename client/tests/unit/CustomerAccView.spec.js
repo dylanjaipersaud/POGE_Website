@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { shallowMount } from '@vue/test-utils';
 import { createStore } from 'vuex';
 import CustomerView from '@/components/CustomerAccView.vue'; // Ensure this path is correct
@@ -29,6 +30,7 @@ describe('CustomerView.vue', () => {
     actions = {
       getPurchases: jest.fn().mockResolvedValue([]),
       logout: jest.fn().mockResolvedValue(),
+      clearCart: jest.fn().mockResolvedValue(),
     };
 
     store = createStore({

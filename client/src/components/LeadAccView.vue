@@ -121,64 +121,104 @@
       </div>
       <br />
       <h4>Teams</h4>
-      <v-expansion-panels
-        v-model="selectedTeam"
-        style="max-width: 50%"
-        class="my-4"
-        variant="inset"
-      >
-        <v-expansion-panel
-          v-for="team in team_items"
-          :key="team.team_name"
-          :title="team.team_name"
-          :value="team.team_name"
+      <v-row>
+        <v-expansion-panels
+          v-model="selectedTeam"
+          style="max-width: 50%"
+          class="my-4"
+          variant="inset"
         >
-          <v-expansion-panel-text>
-            <strong>Members</strong>
-            <v-row
-              v-for="emp in getEmployees(team.team_name)"
-              :key="emp.id"
-              align="center"
-              class="emp-row"
-            >
-              <p>{{ emp.first_name }} {{ emp.last_name }}</p>
-              <v-spacer></v-spacer>
-              <v-btn
-                :disabled="team.manager == emp.id ? true : false"
-                size="small"
-                @click="reassignEmp(emp)"
-                >Re-Assign</v-btn
+          <v-expansion-panel
+            v-for="team in team_items"
+            :key="team.team_name"
+            :title="team.team_name"
+            :value="team.team_name"
+          >
+            <v-expansion-panel-text>
+              <strong>Members</strong>
+              <v-row
+                v-for="emp in getEmployees(team.team_name)"
+                :key="emp.id"
+                align="center"
+                class="emp-row"
               >
-            </v-row>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <v-card v-if="editTeam">
-        <v-card-title
-          >Re-assign {{ selectedEmp.first_name }}
-          {{ selectedEmp.last_name }}</v-card-title
-        >
-        <v-card-text>
-          <h4>New Team</h4>
-          <v-col>
-            <v-select
-              :items="team_items"
-              item-title="team_name"
-              item-value="team_name"
-              v-model="newTeam"
-            ></v-select>
-            <v-row>
-              <v-btn @click="updateEmpTeam()">Confirm</v-btn>
-            </v-row>
-          </v-col>
-        </v-card-text>
-      </v-card>
+                <p>{{ emp.first_name }} {{ emp.last_name }}</p>
+                <v-spacer></v-spacer>
+                <v-btn
+                  :disabled="team.manager == emp.id ? true : false"
+                  size="small"
+                  class="menu-btn"
+                  @click="reassignEmp(emp)"
+                  >Re-Assign</v-btn
+                >
+              </v-row>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <v-card v-if="editTeam" class="assign-card">
+          <v-card-title
+            >Re-assign {{ selectedEmp.first_name }}
+            {{ selectedEmp.last_name }}</v-card-title
+          >
+          <v-card-text>
+            <h4>New Team</h4>
+            <v-col>
+              <v-select
+                :items="team_items"
+                item-title="team_name"
+                item-value="team_name"
+                clearable
+                v-model="newTeam"
+              ></v-select>
+              <v-row>
+                <v-btn class="menu-btn" @click="updateEmpTeam()">Confirm</v-btn>
+              </v-row>
+            </v-col>
+          </v-card-text>
+        </v-card>
+      </v-row>
+      <br />
+      <h4>Games</h4>
+      <div style="display: flex">
+        <div class="game-list">
+          <v-list v-for="game in game_items" :key="game.game_items">
+            <v-list-item>
+              <div style="display: flex">
+                <p>{{ game.game }}</p>
+                <v-spacer></v-spacer>
+                <p v-if="checkIsBefore(game.release_date)">
+                  <i>Released on {{ formatDate(game.release_date) }}</i>
+                </p>
+                <v-btn class="menu-btn" v-else @click="setDatePicker(game.game)"
+                  >Set Release</v-btn
+                >
+              </div>
+            </v-list-item>
+          </v-list>
+        </div>
+        <div class="date-list" v-if="showPicker">
+          <v-date-picker
+            rounded="0"
+            class="assign-card"
+            :title="'Select a date for ' + selectedGame"
+            v-model="newDate"
+            :min="getToday()"
+          ></v-date-picker>
+          <!-- <v-card class="assign-card" rounded="0">
+            <v-card-text>
+              {{ formatDate(newDate) }}
+            </v-card-text>
+          </v-card> -->
+          <v-btn class="date-btn" @click="setDate()">Set Date</v-btn>
+        </div>
+      </div>
     </div>
   </v-container>
 </template>
   
   <script>
 import axios from "axios";
+import moment from "moment";
 export default {
   data: () => ({
     editMode: false,
@@ -196,6 +236,9 @@ export default {
     email: null,
     id: null,
     rules: [(value) => !!value || "Field cannot be empty!"],
+    showPicker: false,
+    newDate: null,
+    selectedGame: null,
   }),
   computed: {
     team_items() {
@@ -207,8 +250,11 @@ export default {
     user() {
       return this.$store.state.user;
     },
+    game_items() {
+      return this.$store.getters.game_items;
+    },
   },
-  mounted() {
+  async mounted() {
     this.$store
       .dispatch("getTeams")
       .then((res) => {
@@ -225,7 +271,16 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+    await this.$store
+      .dispatch("getGames")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     this.newUserData = this.user;
+    // this.checkIsBefore("2027-11-03 10:45:00");
   },
   methods: {
     getEmployees(teamName) {
@@ -242,7 +297,6 @@ export default {
 
     handleUpdate() {
       if (this.email && this.id) {
-        
         console.log(
           "Updated Information - Email:",
           this.email,
@@ -253,6 +307,62 @@ export default {
       } else {
         alert("Please fill in all fields.");
       }
+    },
+
+    getToday() {
+      return moment().format("MM[-]DD[-]YYYY");
+    },
+
+    formatDate(date) {
+      return moment(date).format("MM[-]DD[-]YYYY");
+    },
+
+    checkIsBefore(dateTime) {
+      let holdDateTime = moment(dateTime);
+      // console.log(
+      //   "Comparing",
+      //   moment(),
+      //   "to",
+      //   holdDateTime,
+      //   ":",
+      //   moment().isAfter(holdDateTime)
+      // );
+      if (moment().isAfter(holdDateTime)) return true;
+      return false;
+    },
+
+    setDatePicker(name) {
+      this.showPicker = true;
+      this.newDate = null;
+      this.selectedGame = name;
+    },
+
+    setDate() {
+      if (this.newDate == null) {
+        alert("Please select a date");
+        return;
+      }
+      console.log("selectedGame:", this.selectedGame);
+      console.log("newDate:", this.newDate);
+      axios
+        .put("http://localhost:3030/Games", null, {
+          params: {
+            game: this.selectedGame,
+            release_date: this.newDate,
+          },
+        })
+        .then( (res) => {
+          alert("Date updated");
+          console.log(res)
+          this.$store.dispatch("getGames");
+          this.showPicker = false;
+          this.selectedGame = null;
+          this.newDate = null;
+        })
+        .catch((err) => {
+          alert("Something went wrong");
+          console.error(err);
+        });
     },
 
     editUser() {
@@ -296,6 +406,10 @@ export default {
     },
 
     updateEmpTeam() {
+      if (this.newTeam == null) {
+        alert("New team needs to be selected");
+        return;
+      }
       this.selectedEmp.team_name = this.newTeam;
       axios
         .put("http://localhost:3030/Employees", null, {
@@ -347,12 +461,38 @@ export default {
 .btn-list {
   padding: 20px;
 }
+.menu-btn {
+  background-color: rgb(234, 234, 234);
+  color: black;
+}
 /* .update-btn,
 .back-btn {
   width: min-content;
 } */
 .emp-row {
   padding: 15px;
+}
+.assign-card {
+  margin-left: 10px;
+  height: min-content;
+  display: flex;
+  flex-direction: column;
+}
+.game-list {
+  min-width: 50%;
+  margin-bottom: 20px;
+}
+.date-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.date-btn {
+  margin-left: 10px;
+  background-color: rgb(234, 234, 234);
+  color: black;
+  border-radius: 0;
+  margin-top: 15px;
 }
 </style>
   

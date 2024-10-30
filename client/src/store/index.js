@@ -1,37 +1,10 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 
-// {
-//   "game": "BunkerNite",
-//   "release_date": "2017-04-01 12:30:00",
-//   "storage": "50GB",
-//   "price": 0,
-//   "maturity_rating": "T",
-//   "platform": "Xbox",
-//   "image_name": "bunker_img"
-// },
-// {
-//   "game": "Cola El Machbros",
-//   "release_date": "2012-05-11 00:00:00",
-//   "storage": "500MB",
-//   "price": 12,
-//   "maturity_rating": "T",
-//   "platform": "Playstation",
-//   "image_name": "cola_img"
-// },
-// {
-//   "game": "Command of Duty",
-//   "release_date": "2020-01-19 00:00:00",
-//   "storage": "100GB",
-//   "price": 60,
-//   "maturity_rating": "M",
-//   "platform": "PC",
-//   "image_name": "command_img"
-// },
 const store = createStore({
   state: {
     role: localStorage.getItem('role') || 0,
-    user: JSON.parse(localStorage.getItem('user')) || {}, 
+    user: JSON.parse(localStorage.getItem('user')) || {},
     cart_items: JSON.parse(localStorage.getItem('cart')) || [],
     customer_items: [],
     employee_items: [],
@@ -39,6 +12,7 @@ const store = createStore({
     game_items: [],
     team_items: [],
     update_items: [],
+    development_items: [],
     forum_items: [],
     purchase_items: [],
   },
@@ -53,6 +27,7 @@ const store = createStore({
     game_items: state => state.game_items,
     team_items: state => state.team_items,
     update_items: state => state.update_items,
+    development_items: state => state.development_items,
     forum_items: state => state.forum_items,
     purchase_items: state => state.purchase_items,
   },
@@ -69,24 +44,24 @@ const store = createStore({
       state.role = newRole;
     },
 
-    set_cart(state){
+    set_cart(state) {
       localStorage.setItem('cart', JSON.stringify(state.cart_items))
     },
 
-    add_cart(state, item){
+    add_cart(state, item) {
       state.cart_items.push(item);
       localStorage.setItem('cart', JSON.stringify(state.cart_items))
     },
 
-    remove_cart(state, item){
-      for(let i = 0; i < state.cart_items.length; i++){
-        if(state.cart_items[i].game === item.game)
+    remove_cart(state, item) {
+      for (let i = 0; i < state.cart_items.length; i++) {
+        if (state.cart_items[i].game === item.game && String(state.cart_items[i].store).trim() === String(item.store).trim())
           state.cart_items.splice(i)
       }
       localStorage.setItem('cart', JSON.stringify(state.cart_items))
     },
 
-    clear_cart(state){
+    clear_cart(state) {
       state.cart_items = [];
       localStorage.removeItem('cart')
     },
@@ -115,7 +90,7 @@ const store = createStore({
           })
     },
 
-    get_logins(state){
+    get_logins(state) {
       state.login_items =
         axios.get("http://localhost:3030/LoginList/")
           .then((res) => {
@@ -127,13 +102,13 @@ const store = createStore({
           })
     },
 
-    set_games(state, games) {
-      state.game_items = games
+    set_games(state, items) {
+      state.game_items = items
     },
 
-    get_teams(state){
-      state.team_items = 
-      axios.get("http://localhost:3030/Teams/")
+    get_teams(state) {
+      state.team_items =
+        axios.get("http://localhost:3030/Teams/")
           .then((res) => {
             console.log(res);
             this.state.team_items = res.data;
@@ -143,21 +118,17 @@ const store = createStore({
           })
     },
 
-    get_updates(state){
-      state.update_items = 
-      axios.get("http://localhost:3030/Updates/")
-          .then((res) => {
-            console.log(res);
-            this.state.update_items = res.data;
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+    set_updates(state, items) {
+      state.update_items = items;
     },
 
-    get_forums(state){
-      state.forum_items = 
-      axios.get("http://localhost:3030/Forums/")
+    set_developments(state, items) {
+      state.development_items = items;
+    },
+
+    get_forums(state) {
+      state.forum_items =
+        axios.get("http://localhost:3030/Forums/")
           .then((res) => {
             console.log(res);
             this.state.forum_items = res.data;
@@ -167,16 +138,8 @@ const store = createStore({
           })
     },
 
-    get_purchases(state){
-      state.purchase_items = 
-      axios.get("http://localhost:3030/Purchases/")
-          .then((res) => {
-            console.log(res);
-            this.state.purchase_items = res.data;
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+    set_purchases(state, items) {
+      state.purchase_items = items
     },
 
     // put_employee(state, newData){
@@ -192,32 +155,32 @@ const store = createStore({
   },
 
   actions: {
-    login({ commit }, newData){
+    login({ commit }, newData) {
       console.log(newData)
       commit('update_user', newData.user)
       commit('update_role', newData.role)
     },
 
-    logout({ commit }){
+    logout({ commit }) {
       localStorage.removeItem('user')
       localStorage.removeItem('role')
       commit('update_user', {})
       commit('update_role', 0)
     },
 
-    setCart({ commit }){
+    setCart({ commit }) {
       commit('set_cart')
     },
 
-    addCart({ commit }, item){
+    addCart({ commit }, item) {
       commit('add_cart', item)
     },
 
-    removeCart({ commit }, item){
+    removeCart({ commit }, item) {
       commit('remove_cart', item)
     },
 
-    clearCart({ commit }){
+    clearCart({ commit }) {
       commit('clear_cart')
     },
 
@@ -229,36 +192,62 @@ const store = createStore({
       commit('get_employees')
     },
 
-    getLogins({ commit }){
+    getLogins({ commit }) {
       commit('get_logins')
     },
 
     getGames({ commit }) {
       return axios.get("http://localhost:3030/Games/")
-      .then((res) => {
-        console.log(res);
-        commit('set_games', res.data)
-      })
-      .catch((err) => {
-        console.err(err)
-      })
-      
+        .then((res) => {
+          console.log(res);
+          commit('set_games', res.data)
+        })
+        .catch((err) => {
+          console.err(err)
+        })
+
     },
 
     getTeams({ commit }) {
       commit('get_teams')
     },
 
-    getUpdates({ commit }) {
-      commit('get_updates')
+    async getUpdates({ commit }) {
+      return await axios.get("http://localhost:3030/Updates/")
+          .then((res) => {
+            console.log(res);
+            commit('set_updates', res.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+
+    async getDevelopments({ commit }) {
+      return await axios.get("http://localhost:3030/Developments/")
+        .then((res) => {
+          console.log(res);
+          commit('set_developments', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
 
     getForums({ commit }) {
       commit('get_forums')
     },
 
-    getPurchases({ commit }) {
-      commit('get_purchases')
+    async getPurchases({ commit }) {
+      return axios.get("http://localhost:3030/Purchases/")
+        .then((res) => {
+          console.log(res);
+          commit('set_purchases', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
     },
 
   },

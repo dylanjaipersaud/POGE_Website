@@ -121,7 +121,42 @@
         </v-row>
       </div>
       <br />
-      <h4>Development</h4>
+      <v-row class="post-card">
+        <h2>Discussions</h2>
+        <v-spacer></v-spacer>
+        <v-btn class="post-btn" @click="setPosting = !setPosting">
+          <p v-if="!setPosting">Add Post</p>
+          <p v-else>Cancel</p>
+        </v-btn>
+      </v-row>
+      <v-card v-if="setPosting" class="post-card">
+        <v-card-title>Create a New Post</v-card-title>
+        <v-card-text>
+          <v-form ref="discussion">
+            <v-select
+              label="Select the game"
+              :items="getGameOptions()"
+              clearable
+              v-model="game"
+            ></v-select>
+            <v-text-field label="Patch No" v-model="patch"></v-text-field>
+            <v-select
+              label="Select the development status"
+              :items="status_options"
+              clearable
+              v-model="status"
+            ></v-select>
+            <v-text-field
+              label="Write the reason"
+              clearable
+              v-model="reason"
+              counter
+              :rules="[textRules.lengthRules(30)]"
+            ></v-text-field>
+            <v-btn class="post-btn" @click="submitUpdate()">Submit</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
       <v-expansion-panels
         v-model="selectedTeam"
         style="max-width: 50%"
@@ -129,14 +164,14 @@
         variant="inset"
       >
         <v-expansion-panel
-          v-for="update in update_items"
+          v-for="update in getUpdateTeam()"
           :key="update.patch"
           :title="update.game"
-          :value="update.team_name"
         >
           <v-expansion-panel-text>
-            <strong>{{ update.team_name }}</strong>
-            <p>{{ update.game }}</p>
+            <p>Patch No: {{ update.patch }}</p>
+            <p>Reason: {{ update.reason }}</p>
+            <p>Status: {{ update.status }}</p>
             <!-- <v-row
               v-for="emp in getEmployees(team.team_name)"
               :key="emp.id"
@@ -185,6 +220,7 @@ export default {
   data: () => ({
     editMode: false,
     editTeam: false,
+    setPosting: false,
     newUserData: {
       email: "",
       id: 0,
@@ -198,6 +234,15 @@ export default {
     email: null,
     id: null,
     rules: [(value) => !!value || "Field cannot be empty!"],
+    reason: null,
+    status: null,
+    game: null,
+    patch: null,
+    status_options: ["In-progress", "Completed", "Delayed", "Stopped"],
+    textRules: {
+      lengthRules: (len) => (v) =>
+        (v || "").length <= len || `Invalid character length, required ${len}`,
+    },
   }),
   computed: {
     team_items() {
@@ -208,6 +253,9 @@ export default {
     },
     update_items() {
       return this.$store.getters.update_items;
+    },
+    development_items() {
+      return this.$store.getters.development_items;
     },
     user() {
       return this.$store.state.user;
@@ -223,6 +271,14 @@ export default {
         console.log(err);
       });
     this.$store
+      .dispatch("getDevelopments")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$store
       .dispatch("getEmployees")
       .then((res) => {
         console.log(res);
@@ -230,7 +286,7 @@ export default {
       .catch((err) => {
         console.log(err);
       });
-      this.$store
+    this.$store
       .dispatch("getUpdates")
       .then((res) => {
         console.log(res);
@@ -253,9 +309,18 @@ export default {
       return holdEmp;
     },
 
+    getUpdateTeam() {
+      let holdUpdates = [];
+      for (let i = 0; i < this.update_items.length; i++) {
+        if (this.update_items[i].team_name == this.user.team_name)
+          holdUpdates.push(this.update_items[i]);
+      }
+      return holdUpdates;
+    },
+
     handleUpdate() {
       if (this.email && this.id) {
-                console.log(
+        console.log(
           "Updated Information - Email:",
           this.email,
           ", ID:",
@@ -302,34 +367,44 @@ export default {
           console.log(err.toJSON());
         });
     },
-    
-    reassignEmp(empInfo) {
-      this.selectedEmp = empInfo;
-      if (!this.editTeam) this.editTeam = !this.editTeam;
+
+    getGameOptions() {
+      let holdGames = [];
+      for (let i = 0; i < this.development_items.length; i++) {
+        if (this.development_items[i].team_name == this.user.team_name) {
+          holdGames.push(this.development_items[i].game);
+        }
+      }
+      return holdGames;
     },
 
-    updateEmpTeam() {
-      this.selectedEmp.team_name = this.newTeam;
-      axios
-        .put("http://localhost:3030/Employees", null, {
-          params: this.selectedEmp,
+    submitUpdate() {
+      if (
+        this.patch == null ||
+        this.reason == null ||
+        this.game == null ||
+        this.status == null
+      ) {
+        alert("Please set all fields");
+        return;
+      }
+      axios.post("http://localhost:3030/Updates", null, {
+          params: {
+            patch: this.patch,
+            game: this.game,
+            team_name: this.user.team_name,
+            reason: this.reason,
+            status: this.status
+          },
         })
         .then((res) => {
           console.log(res);
-          this.$store
-            .dispatch("getEmployees")
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          this.editTeam = !this.editTeam;
-          this.selectedEmp = {};
+          this.setPosting = false;
+          this.patch = null;
+          this.reason = null;
+          this.status = null;
+          this.$store.dispatch("getUpdates");
         })
-        .catch((err) => {
-          console.log(err.toJSON());
-        });
     },
 
     logoutUser() {
@@ -366,6 +441,18 @@ export default {
 } */
 .emp-row {
   padding: 15px;
+}
+.post-btn {
+  background-color: white;
+  color: black;
+}
+.post-card {
+  width: 50%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.post-card-text {
+  margin-left: 10px;
 }
 </style>
   
