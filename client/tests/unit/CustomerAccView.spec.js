@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { shallowMount } from '@vue/test-utils';
 import { createStore } from 'vuex';
-import CustomerView from '@/components/CustomerAccView.vue'; // Ensure this path is correct
+import CustomerView from '@/components/CustomerAccView.vue'; 
 import axios from 'axios';
 jest.mock('axios');
 
@@ -91,7 +91,8 @@ describe('CustomerView.vue', () => {
     expect(store.state.user).toEqual(wrapper.vm.newUserData);
   });
   it('should log out the user', async () => {
-    const mockPush = jest.fn();       const mockRouter = { push: mockPush };     
+    const mockPush = jest.fn();  
+    const mockRouter = { push: mockPush };     
     const wrapper = shallowMount(CustomerView, { 
       global: { 
         plugins: [store], 
@@ -99,5 +100,7 @@ describe('CustomerView.vue', () => {
     });
     
     await wrapper.vm.logoutUser();      
-    expect(actions.logout).toHaveBeenCalled();      expect(mockPush).toHaveBeenCalledWith('/LoginView');    });
+    expect(actions.logout).toHaveBeenCalled();      
+    expect(mockPush).toHaveBeenCalledWith('/LoginView');
+  });
 });  

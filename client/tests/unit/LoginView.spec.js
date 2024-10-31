@@ -10,12 +10,12 @@ import LeadAccView from '@/components/LeadAccView.vue';
 import CustomerAccView from '@/components/CustomerAccView.vue';
 
 import { createRouter, createWebHistory } from 'vue-router'
-
+//set up vuetify for testing component
 const vuetify = createVuetify({
     components,
     directives,
 })
-
+//create a vue router for testing
 const router = createRouter({
     // eslint-disable-next-line no-undef
     history: createWebHistory(process.env.BASE_URL),
@@ -31,7 +31,7 @@ const router = createRouter({
 describe('LoginComponent.vue', () => {
     let store;
 
-    
+   //function runs before each test to refresh the setup of the store
     beforeEach(() => {
         store = createStore({
             state: {
@@ -123,10 +123,10 @@ describe('LoginComponent.vue', () => {
             },
         });
     });
+   
 
-    /*
-    *   Testing accountLookUp function
-    */
+    //  Testing accountLookUp function,
+    //Test that 'mjersey' authenticates as a tech lead.
     it('should authenticate mjersey as tech lead (role = 1)', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
@@ -136,6 +136,7 @@ describe('LoginComponent.vue', () => {
         expect(store.state.role).toBe(1);
         expect(store.state.user.email).toBe('mjersey@poge.com');
     });
+    //tests that goodneight as an employee
     it('should authenticate goodneighbor as employee (role = 2)', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
     
@@ -144,7 +145,9 @@ describe('LoginComponent.vue', () => {
     
         expect(store.state.role).toBe(2);
         expect(store.state.user.email).toBe('goodneighbor@poge.com');
+        //checks if true
     });
+    //same process but for customer
     it('should authenticate reshmac001 as customer (role = 3)', () => {
         const wrapper = mount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
@@ -154,7 +157,7 @@ describe('LoginComponent.vue', () => {
         expect(store.state.role).toBe(3);
         expect(store.state.user.email).toBe('reshmac001@gmail.com');
     });
-
+    //edge case in case of failed authentication
     it('should set invalidAuth to true on failed authentication', () => {
         const wrapper = mount(LoginView, { global: { plugins: [store, vuetify, router]  } });
 
@@ -165,9 +168,9 @@ describe('LoginComponent.vue', () => {
     });
 
 
-    /*
-    *   Testing getUserRole function
-    */
+
+    //Testing getUserRole function
+    //similar to last test but we make sure that the role number is set
     it('should set role to 3 for a customer', () => {
         const wrapper = shallowMount(LoginView, { global: { plugins: [store, vuetify, router] } });
 
@@ -197,7 +200,13 @@ describe('LoginComponent.vue', () => {
         expect(store.state.role).toBe(1);
         expect(store.state.user.email).toBe('mjersey@poge.com');
     });
+    //all of this seems redundant but creating the setup
+    //store creationg ,test cases, and mocking is ensuring functionality,
+    // improving code quality, and saves time from issues later in the future
 
+
+
+    
     // describe('getUserRole', () => {
     //     let wrapper;
 

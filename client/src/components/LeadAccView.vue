@@ -280,21 +280,23 @@ export default {
         console.log(err);
       });
     this.newUserData = this.user;
-    // this.checkIsBefore("2027-11-03 10:45:00");
+    //this.checkIsBefore("2027-11-03 10:45:00");
   },
   methods: {
     getEmployees(teamName) {
-      let holdEmp = [];
-      for (let i = 0; i < this.employee_items.length; i++) {
-        if (
-          String(teamName).toLowerCase() ===
-          this.employee_items[i].team_name.toLowerCase()
-        )
-          holdEmp.push(this.employee_items[i]);
-      }
-      return holdEmp;
-    },
-
+  console.log('teamName:', teamName);
+  console.log('employee_items:', this.employee_items);
+  let holdEmp = [];
+  for (let i = 0; i < this.employee_items.length; i++) {
+    if (
+      String(teamName).toLowerCase() ===
+      this.employee_items[i].team_name.toLowerCase()
+    ) {
+      holdEmp.push(this.employee_items[i]);
+    }
+  }
+  return holdEmp;
+},
     handleUpdate() {
       if (this.email && this.id) {
         console.log(
@@ -377,29 +379,21 @@ export default {
       };
       this.editMode = !this.editMode;
     },
-
     updateUser() {
-      axios
-        .put("http://localhost:3030/Employees", null, {
-          params: this.newUserData,
-        })
-        .then((res) => {
-          console.log(res);
-          this.$store.commit("update_user", this.newUserData);
-          this.$store
-            .dispatch("getEmployees")
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          this.editMode = !this.editMode;
-        })
-        .catch((err) => {
-          console.log(err.toJSON());
-        });
-    },
+  axios
+    .put("http://localhost:3030/Employees", null, {
+      params: this.newUserData,
+    })
+    .then((res) => {
+      console.log(res);
+      // Dispatch the action to update user data in the store
+      this.$store.dispatch('update_user', this.newUserData);
+      this.editMode = !this.editMode;
+    })
+    .catch((err) => {
+      console.log(err.toJSON());
+    });
+},
     reassignEmp(empInfo) {
       this.selectedEmp = empInfo;
       if (!this.editTeam) this.editTeam = !this.editTeam;
@@ -433,13 +427,22 @@ export default {
         });
     },
 
-    logoutUser() {
-      if (confirm("Would you like to logout?")) {
-        this.$store.dispatch("logout").then(() => {
-          this.$router.push("/LoginView");
-        });
-      }
-    },
+    async logoutUser() {
+    console.log("Logout initiated");
+    if (confirm("Would you like to logout?")) {
+        console.log("User confirmed logout");
+        try {
+            await this.$store.dispatch("logout");
+            
+            console.log("Dispatch successful, redirecting");
+            this.$router.push("/LoginView");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    } else {
+        console.log("User cancelled logout");
+    }
+},
   },
 };
 </script>

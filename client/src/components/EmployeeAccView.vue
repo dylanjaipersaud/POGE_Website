@@ -229,6 +229,7 @@ export default {
       last_name: "",
     },
     selectedTeam: "",
+    update_items: [],
     newTeam: "",
     selectedEmp: { first_name: "jess", last_name: "matt" },
     email: null,
@@ -407,13 +408,23 @@ export default {
         })
     },
 
-    logoutUser() {
-      if (confirm("Would you like to logout?")) {
-        this.$store.dispatch("logout").then(() => {
-          this.$router.push("/LoginView");
-        });
-      }
-    },
+   async logoutUser() {
+    console.log("Logout initiated");
+    if (confirm("Would you like to logout?")) {
+        console.log("User confirmed logout");
+        try {
+            await this.$store.dispatch("logout");
+            
+            console.log("Dispatch successful, redirecting");
+            this.$router.push("/LoginView");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    } else {
+        console.log("User cancelled logout");
+    }
+},
+
   },
 };
 </script>
