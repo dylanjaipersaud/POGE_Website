@@ -229,7 +229,7 @@ export default {
       last_name: "",
     },
     selectedTeam: "",
-    update_items: [],
+    updates: [],
     newTeam: "",
     selectedEmp: { first_name: "jess", last_name: "matt" },
     email: null,
@@ -312,9 +312,9 @@ export default {
 
     getUpdateTeam() {
       let holdUpdates = [];
-      for (let i = 0; i < this.update_items.length; i++) {
-        if (this.update_items[i].team_name == this.user.team_name)
-          holdUpdates.push(this.update_items[i]);
+      for (let i = 0; i < this.updates.length; i++) {
+        if (this.updates[i].team_name == this.user.team_name)
+          holdUpdates.push(this.update[i]);
       }
       return holdUpdates;
     },
